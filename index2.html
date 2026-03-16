@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPath — India Govt Exams Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090E;--bg2:#0D1117;--bgc:#121820;--bge:#1A2332;
+  --acc:#FF2D55;--acc-d:rgba(255,45,85,.13);--acc-b:rgba(255,45,85,.3);
+  --bdr:rgba(255,255,255,.06);--bdr-h:rgba(255,255,255,.12);
+  --t1:#E8EDF5;--t2:#CBD5E1;--tm:#94A3B8;
+  --green:#00D68F;--gd:rgba(0,214,143,.1);--gb:rgba(0,214,143,.2);
+  --yellow:#FFB800;--yd:rgba(255,184,0,.1);--yb:rgba(255,184,0,.2);
+  --red:#FF4D4D;--rd:rgba(255,77,77,.1);--rb:rgba(255,77,77,.2);
+  --blue:#4D9EFF;--bd:rgba(77,158,255,.1);--bb:rgba(77,158,255,.2);
+  --purple:#A78BFA;--pd:rgba(167,139,250,.1);--pb:rgba(167,139,250,.2);
+  --teal:#2DD4BF;--td:rgba(45,212,191,.1);--tb:rgba(45,212,191,.2);
+  --orange:#FB923C;--od:rgba(251,146,60,.1);--ob:rgba(251,146,60,.2);
+  --pink:#F472B6;--pkd:rgba(244,114,182,.1);--pkb:rgba(244,114,182,.2);
+  --sky:#38BDF8;--skd:rgba(56,189,248,.1);--skb:rgba(56,189,248,.2);
+  --lime:#A3E635;--ld:rgba(163,230,53,.1);--lb:rgba(163,230,53,.2);
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideR{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+
+/* ── PAGE ── */
+.page{width:100%;min-height:100vh;padding:44px 52px 72px;animation:fadeIn .5s var(--ease) both}
+.ph{margin-bottom:32px;animation:fadeUp .5s .05s var(--ease) both}
+.plabel{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:10px}
+.plabel::before{content:'';display:inline-block;width:18px;height:1px;background:var(--acc)}
+.plabel::after{content:'';display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--acc);margin-left:2px;box-shadow:0 0 6px var(--acc);animation:pulse 2s infinite}
+.ptitle{font-size:26px;font-weight:700;color:var(--t1);line-height:1.2;letter-spacing:-.4px}
+.ptitle em{font-style:normal;color:var(--acc);text-shadow:0 0 22px rgba(255,45,85,.3)}
+.psub{font-size:13.5px;color:var(--t2);margin-top:7px;line-height:1.6}
+
+/* ── NAV BTN ── */
+.nav-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  background: var(--acc);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: transform 0.2s, background 0.2s;
+  margin-top: 20px;
+}
+.nav-btn:hover { transform: translateY(-2px); background: #ff4d6d; }
+.nav-btn svg { width: 14px; height: 14px; }
+
+/* ── STATS ── */
+.stats{display:flex;gap:16px;margin-top:20px;flex-wrap:wrap}
+.stat{background:var(--bgc);border:1px solid var(--bdr);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;transition:border-color .2s,transform .15s var(--spring)}
+.stat:hover{border-color:var(--bdr-h);transform:translateY(-1px)}
+.stat-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stat-icon svg{width:15px;height:15px}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;color:var(--acc);line-height:1}
+.stat-lbl{font-size:10.5px;color:var(--t2);font-weight:500;margin-top:2px}
+
+/* ── CARD ── */
+.card{background:var(--bgc);border-radius:16px;border:1px solid var(--bdr);overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.02),0 8px 32px rgba(0,0,0,.4);animation:fadeUp .5s .1s var(--ease) both}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--bdr);background:var(--bg2);padding:0 6px;overflow-x:auto;gap:1px;position:sticky;top:0;z-index:10}
+.tabs::-webkit-scrollbar{height:3px}
+.tabs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+.tab-btn{display:flex;align-items:center;gap:7px;padding:14px 16px;border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;color:var(--tm);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .2s,border-color .2s,background .15s;border-radius:7px 7px 0 0;position:relative}
+.ti{width:14px;height:14px;opacity:.35;transition:opacity .2s;flex-shrink:0}
+.tab-btn:hover{color:var(--t2);background:rgba(255,255,255,.03)}
+.tab-btn:hover .ti{opacity:.6}
+.tab-btn.active{color:var(--t1);border-bottom-color:var(--acc);font-weight:600;background:rgba(255,45,85,.04)}
+.tab-btn.active .ti{opacity:1}
+.tbadge{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;padding:1px 6px;border-radius:20px;background:rgba(255,255,255,.05);color:var(--tm);border:1px solid var(--bdr);transition:all .2s}
+.tab-btn.active .tbadge{background:var(--acc-d);color:var(--acc);border-color:var(--acc-b)}
+
+/* ── BODY ── */
+.tab-body{display:flex;min-height:580px}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;flex-shrink:0;border-right:1px solid var(--bdr);background:var(--bg2);overflow-y:auto;position:sticky;top:49px;max-height:calc(100vh - 49px);animation:slideR .3s .15s var(--ease) both}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:4px}
+.slabel{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tm);padding:14px 12px 6px;opacity:.7}
+
+/* ── FILTER CHIP ROW ── */
+.filter-row{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px 6px}
+.fchip{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--bdr);background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--tm);transition:all .15s var(--ease);white-space:nowrap}
+.fchip:hover{border-color:var(--bdr-h);color:var(--t2);background:var(--bge)}
+.fchip.active{background:var(--acc-d);border-color:var(--acc-b);color:var(--acc)}
+.fchip svg{width:11px;height:11px;flex-shrink:0}
+.fchip-count{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:600;margin-left:2px}
+
+/* ── SIDEBAR ITEMS ── */
+.sitem{display:flex;align-items:center;justify-content:space-between;padding:9px 10px;cursor:pointer;border-radius:9px;margin:1px 6px;border:1px solid transparent;transition:background .15s,border-color .15s,transform .12s var(--spring)}
+.sitem:hover{background:var(--bge);transform:translateX(2px)}
+.sitem.active{background:var(--acc-d);border-color:var(--acc-b);transform:translateX(3px)}
+.sil{display:flex;align-items:center;gap:8px;min-width:0}
+.siwrap{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,.05);transition:transform .2s var(--spring)}
+.siwrap svg{width:13px;height:13px}
+.sitem:hover .siwrap,.sitem.active .siwrap{transform:scale(1.1)}
+.sname{font-size:11.5px;font-weight:600;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .15s}
+.sitem.active .sname{color:var(--t1)}
+.scount{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--tm);margin-top:1px;font-weight:500}
+.sitem.active .scount{color:var(--acc)}
+.sarr{color:var(--tm);flex-shrink:0;opacity:.25;transition:opacity .15s,transform .15s;width:10px;height:10px}
+.sitem.active .sarr{opacity:1;color:var(--acc);transform:translateX(2px)}
+
+/* ── PANEL ── */
+.panel{flex:1;overflow-y:auto;background:var(--bgc);display:flex;flex-direction:column}
+.panel::-webkit-scrollbar{width:4px}
+.panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:4px}
+
+/* ── PANEL HEADER ── */
+.phead{display:flex;align-items:center;gap:14px;padding:22px 26px 18px;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--bgc);z-index:5;animation:fadeUp .28s var(--ease) both}
+.picon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,.06)}
+.picon svg{width:20px;height:20px}
+.ptit{font-size:15px;font-weight:700;color:var(--t1);letter-spacing:-.2px}
+.pdsc{font-size:11px;color:var(--t2);margin-top:2px;line-height:1.4}
+.pcnt{margin-left:auto;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--tm);background:var(--bge);padding:4px 12px;border-radius:20px;border:1px solid var(--bdr)}
+
+/* ── SEARCH ── */
+.search-wrap{position:relative;padding:16px 26px 0}
+.search-input{width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:10px 80px 10px 40px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s}
+.search-input::placeholder{color:var(--tm)}
+.search-input:focus{border-color:var(--acc-b);box-shadow:0 0 0 3px var(--acc-d)}
+.search-ico{position:absolute;left:38px;top:50%;transform:translateY(-50%);color:var(--tm);pointer-events:none}
+.search-ico svg{width:14px;height:14px}
+.search-cnt{position:absolute;right:38px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--tm);background:var(--bge);padding:2px 8px;border-radius:6px;border:1px solid var(--bdr)}
+
+/* ── GRID AREA ── */
+.grid-area{padding:16px 26px 28px;flex:1}
+.egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:9px}
+
+/* ── EXAM CARD ── */
+.ecard{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;background:var(--bg2);border:1px solid var(--bdr);border-radius:11px;cursor:pointer;text-decoration:none;color:inherit;position:relative;overflow:hidden;transition:border-color .2s,background .2s,box-shadow .2s,transform .18s var(--spring);will-change:transform;opacity:0;animation:fadeUp .3s var(--ease) forwards}
+.ecard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2.5px;background:transparent;border-radius:2px 0 0 2px;transition:background .2s}
+.ecard:hover{border-color:var(--bdr-h);background:var(--bge);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.ecard:hover::before{background:var(--acc)}
+.ecard:nth-child(1){animation-delay:.03s}.ecard:nth-child(2){animation-delay:.06s}.ecard:nth-child(3){animation-delay:.09s}
+.ecard:nth-child(4){animation-delay:.11s}.ecard:nth-child(5){animation-delay:.13s}.ecard:nth-child(6){animation-delay:.15s}
+.ecard:nth-child(7){animation-delay:.17s}.ecard:nth-child(8){animation-delay:.19s}.ecard:nth-child(9){animation-delay:.21s}
+.ecard:nth-child(10){animation-delay:.23s}.ecard:nth-child(11){animation-delay:.25s}.ecard:nth-child(12){animation-delay:.27s}
+.ecard:nth-child(n+13){animation-delay:.29s}
+
+/* Card icon */
+.eico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,.06);transition:transform .2s var(--spring)}
+.eico svg{width:17px;height:17px}
+.ecard:hover .eico{transform:scale(1.1)}
+/* Progress */
+.prog-wrap{margin-top:12px;padding-top:10px;border-top:1px dashed var(--bdr)}
+.prog-info{display:flex;justify-content:space-between;margin-bottom:6px;align-items:center}
+.p-cnt{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--acc);display:flex;align-items:center;gap:4px}
+.p-cnt::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--acc);box-shadow:0 0 4px var(--acc)}
+.p-yr{font-size:9.5px;color:var(--tm);font-weight:500;font-family:'JetBrains Mono',monospace}
+.prog-bar{height:4px;background:rgba(255,255,255,.05);border-radius:10px;overflow:hidden;position:relative}
+.prog-fill{height:100%;background:linear-gradient(90deg, var(--acc), #ff5e7e);box-shadow:0 0 8px var(--acc-b);border-radius:10px;transition:width 1s var(--ease)}
+
+.ebody{flex:1;min-width:0}
+.ename{font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.35;margin-bottom:5px;transition:color .15s}
+.ecard:hover .ename{color:#fff}
+.emeta{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px}
+.econd{font-size:10px;color:var(--tm);font-weight:500;display:flex;align-items:center;gap:3px;min-width:0}
+.econd svg{width:9px;height:9px;opacity:.5;flex-shrink:0}
+.etag{font-size:8.5px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid transparent;white-space:nowrap;flex-shrink:0;letter-spacing:.2px}
+.epills{display:flex;gap:5px;flex-wrap:wrap}
+.epill{font-size:9px;color:var(--tm);background:var(--bge);border:1px solid var(--bdr);padding:1px 8px;border-radius:20px;font-weight:500;display:flex;align-items:center;gap:3px;white-space:nowrap}
+.epill svg{width:8px;height:8px;opacity:.5}
+.earrow{width:18px;height:18px;border-radius:50%;border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;color:var(--tm);transition:all .2s;flex-shrink:0}
+.earrow svg{width:7px;height:7px}
+.ecard:hover .earrow{background:var(--acc);border-color:var(--acc);color:#fff;transform:translateX(2px);box-shadow:0 0 8px rgba(255,45,85,.4)}
+
+/* ── EMPTY STATE ── */
+.empty-st{text-align:center;padding:60px 20px;color:var(--tm)}
+.empty-st svg{width:40px;height:40px;opacity:.2;margin-bottom:14px;display:block;margin-inline:auto}
+.empty-title{font-size:14px;font-weight:600;color:var(--t2);margin-bottom:6px}
+.empty-sub{font-size:12px}
+
+/* ── STATE PSC ── */
+.state-wrap{padding:22px 26px;overflow-y:auto;flex:1;width:100%;display:flex;flex-direction:column}
+.state-search-wrap{position:relative;margin-bottom:18px}
+.state-search{width:100%;background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:10px 14px 10px 40px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s}
+.state-search::placeholder{color:var(--tm)}
+.state-search:focus{border-color:var(--acc-b);box-shadow:0 0 0 3px var(--acc-d)}
+.sstate-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--tm);pointer-events:none}
+.sstate-ico svg{width:14px;height:14px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-bottom:28px}
+.sbtn{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;cursor:pointer;text-align:left;transition:background .15s,border-color .15s,transform .12s var(--spring);font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px}
+.sbtn:hover{background:var(--bge);border-color:var(--bdr-h);transform:translateY(-1px)}
+.sbtn.active{background:var(--acc-d);border-color:var(--acc-b)}
+.sbtn-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--bge);border:1px solid var(--bdr);transition:transform .15s var(--spring)}
+.sbtn-icon svg{width:12px;height:12px}
+.sbtn:hover .sbtn-icon,.sbtn.active .sbtn-icon{transform:scale(1.08)}
+.sbtn.active .sbtn-icon{background:rgba(255,45,85,.15);border-color:var(--acc-b)}
+.sbn{font-size:11.5px;font-weight:600;color:var(--t2);transition:color .15s}
+.sbtn.active .sbn{color:var(--acc)}
+.sbc{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--tm);margin-top:1px;transition:color .15s}
+.sbtn.active .sbc{color:var(--acc)}
+.se-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-top:4px}
+.se-title{font-size:14px;font-weight:700;color:var(--t1)}
+.se-badge{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--acc);background:var(--acc-d);padding:2px 8px;border-radius:20px;border:1px solid var(--acc-b)}
+.se-back{background:none;border:1px solid var(--bdr);color:var(--t2);font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 10px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s;margin-left:auto}
+.se-back svg{width:12px;height:12px}
+.se-back:hover{border-color:var(--bdr-h);color:var(--t1);background:var(--bge)}
+
+/* ── COLORS ── */
+.ic-blue{background:var(--bd);color:var(--blue)}.ic-green{background:var(--gd);color:var(--green)}
+.ic-orange{background:var(--od);color:var(--orange)}.ic-red{background:var(--rd);color:var(--red)}
+.ic-yellow{background:var(--yd);color:var(--yellow)}.ic-purple{background:var(--pd);color:var(--purple)}
+.ic-teal{background:var(--td);color:var(--teal)}.ic-pink{background:var(--pkd);color:var(--pink)}
+.ic-acc{background:var(--acc-d);color:var(--acc)}.ic-sky{background:var(--skd);color:var(--sky)}
+.ic-lime{background:var(--ld);color:var(--lime)}
+
+.tg-blue{background:var(--bd);color:var(--blue);border-color:var(--bb)}
+.tg-green{background:var(--gd);color:var(--green);border-color:var(--gb)}
+.tg-orange{background:var(--od);color:var(--orange);border-color:var(--ob)}
+.tg-red{background:var(--rd);color:var(--red);border-color:var(--rb)}
+.tg-yellow{background:var(--yd);color:var(--yellow);border-color:var(--yb)}
+.tg-purple{background:var(--pd);color:var(--purple);border-color:var(--pb)}
+.tg-teal{background:var(--td);color:var(--teal);border-color:var(--tb)}
+.tg-sky{background:var(--skd);color:var(--sky);border-color:var(--skb)}
+
+/* HIDDEN */
+.hidden{display:none!important}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .page{padding:20px 16px 48px}
+  .tab-btn{padding:12px 12px;font-size:11.5px}
+  .tbadge{display:none}
+  .tab-body{flex-direction:column}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--bdr);position:static;max-height:none;animation:none;padding:10px}
+  .slabel{display:none}
+  .sitem{border-radius:100px;padding:6px 12px;margin:2px}
+  .siwrap,.scount,.sarr{display:none}
+  .panel{min-height:400px}
+  .phead{padding:16px 16px 14px}
+  .search-wrap{padding:12px 16px 0}
+  .grid-area{padding:12px 16px 24px}
+  .egrid{grid-template-columns:1fr}
+  .sgrid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .state-wrap{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SVG SPRITE ══ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- navigation / ui -->
+  <symbol id="s-chevron"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="s-chevl"      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="s-search"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="s-building"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22V12h6v10M8 6h.01M16 6h.01M8 10h.01M16 10h.01"/></symbol>
+  <symbol id="s-calendar"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="s-user"       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="s-filter"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
+  <symbol id="s-globe"      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <!-- tab icons -->
+  <symbol id="s-institution" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="3" y1="11" x2="21" y2="11"/><polyline points="5 11 5 22"/><polyline points="19 11 19 22"/><polyline points="9 11 9 22"/><polyline points="15 11 15 22"/><polyline points="3 7 12 2 21 7"/></symbol>
+  <symbol id="s-briefcase"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+  <symbol id="s-bank"        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="5 6 12 3 19 6"/><line x1="4" y1="10" x2="4" y2="21"/><line x1="8" y1="10" x2="8" y2="21"/><line x1="12" y1="10" x2="12" y2="21"/><line x1="16" y1="10" x2="16" y2="21"/><line x1="20" y1="10" x2="20" y2="21"/></symbol>
+  <symbol id="s-umbrella"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M23 12a11.05 11.05 0 0 0-22 0zm-5 7a3 3 0 0 1-6 0v-7"/></symbol>
+  <symbol id="s-train"       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="4"/><path d="M4 11h16M12 3v8"/><path d="m8 19-2 3m12-3 2 3"/></symbol>
+  <symbol id="s-shield"      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="s-book"        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="s-scale"       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M3 6l3 9H3zm18 0l-3 9h3z"/><path d="M3 6h18M6 15h12"/></symbol>
+  <symbol id="s-zap"         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="s-heartpulse"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l1.5-3 2 4.5 1.5-3h6.28"/></symbol>
+  <symbol id="s-cpu"         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M15 20v2M9 2v2M9 20v2M2 15h2M2 9h2M20 15h2M20 9h2"/></symbol>
+  <symbol id="s-users"       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="s-layers"      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+  <symbol id="s-flag"        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+  <symbol id="s-map"         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></symbol>
+  <!-- exam-specific icons -->
+  <symbol id="s-award"       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></symbol>
+  <symbol id="s-tree"        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14c0 4.4-2.2 8-5 8s-5-3.6-5-8a5 5 0 0 1 10 0z"/><path d="M12 22v-8m0-4V6"/></symbol>
+  <symbol id="s-gear"        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="s-plane"       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4s-2 1-3.5 2.5L11 8 2.8 6.2c-.5-.1-.9.2-1.1.7L1 9c0 .5.3 1 .8 1.1l7.2 1.7L5 15H3l-1 3 3-1v-2l3.5-3.5 1.7 7.2c.1.5.6.8 1.1.8l2.3-.7c.5-.2.8-.6.7-1.1z"/></symbol>
+  <symbol id="s-anchor"      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></symbol>
+  <symbol id="s-coins"       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/></symbol>
+  <symbol id="s-pill"        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></symbol>
+  <symbol id="s-wrench"      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+  <symbol id="s-crosshair"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></symbol>
+  <symbol id="s-compass"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+  <symbol id="s-microscope"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 21h18"/><path d="M14 21v-4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v4"/><path d="M14 3v4M18 3v4M14 5h4"/></symbol>
+  <symbol id="s-link"        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="s-trending"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol>
+  <symbol id="s-phone"       viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.13 6.13l1.82-1.82a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="s-mail"        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+  <symbol id="s-archive"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></symbol>
+  <symbol id="s-activity"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+</svg>
+
+<div class="page">
+  <div class="ph">
+    <div class="plabel">Complete Directory</div>
+    <div class="ptitle">India Govt Exams — <em>All 369 Exams</em></div>
+    <div class="psub">Every national, state and PSU exam in one place. Browse by category, filter by level, or search instantly.</div>
+    <a href="index.html" class="nav-btn">
+      <svg><use href="#s-chevl"/></svg>
+      Back to Explorer
+    </a>
+    <div class="stats">
+      <div class="stat"><div class="stat-icon ic-acc"><svg><use href="#s-globe"/></svg></div><div><div class="stat-num">369</div><div class="stat-lbl">Total Exams</div></div></div>
+      <div class="stat"><div class="stat-icon ic-blue"><svg><use href="#s-layers"/></svg></div><div><div class="stat-num">15</div><div class="stat-lbl">Categories</div></div></div>
+      <div class="stat"><div class="stat-icon ic-orange"><svg><use href="#s-map"/></svg></div><div><div class="stat-num">28</div><div class="stat-lbl">State PSCs</div></div></div>
+      <div class="stat"><div class="stat-icon ic-sky"><svg><use href="#s-zap"/></svg></div><div><div class="stat-num">27</div><div class="stat-lbl">PSU Exams</div></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tabs" id="mainTabs">
+      <button class="tab-btn active"   data-tab="upsc"><svg class="ti"><use href="#s-institution"/></svg>UPSC<span class="tbadge">10</span></button>
+      <button class="tab-btn"          data-tab="ssc"><svg class="ti"><use href="#s-briefcase"/></svg>SSC<span class="tbadge">9</span></button>
+      <button class="tab-btn"          data-tab="banking"><svg class="ti"><use href="#s-bank"/></svg>Banking<span class="tbadge">17</span></button>
+      <button class="tab-btn"          data-tab="insurance"><svg class="ti"><use href="#s-umbrella"/></svg>Insurance<span class="tbadge">12</span></button>
+      <button class="tab-btn"          data-tab="railways"><svg class="ti"><use href="#s-train"/></svg>Railways<span class="tbadge">13</span></button>
+      <button class="tab-btn"          data-tab="defence"><svg class="ti"><use href="#s-shield"/></svg>Defence<span class="tbadge">7</span></button>
+      <button class="tab-btn"          data-tab="teaching"><svg class="ti"><use href="#s-book"/></svg>Teaching<span class="tbadge">6</span></button>
+      <button class="tab-btn"          data-tab="judiciary"><svg class="ti"><use href="#s-scale"/></svg>Judiciary<span class="tbadge">4</span></button>
+      <button class="tab-btn"          data-tab="psu"><svg class="ti"><use href="#s-zap"/></svg>PSU<span class="tbadge">27</span></button>
+      <button class="tab-btn"          data-tab="healthcare"><svg class="ti"><use href="#s-heartpulse"/></svg>Healthcare<span class="tbadge">10</span></button>
+      <button class="tab-btn"          data-tab="technical"><svg class="ti"><use href="#s-cpu"/></svg>Technical<span class="tbadge">4</span></button>
+      <button class="tab-btn"          data-tab="centralpolice"><svg class="ti"><use href="#s-users"/></svg>Central Police<span class="tbadge">5</span></button>
+      <button class="tab-btn"          data-tab="other"><svg class="ti"><use href="#s-layers"/></svg>Other<span class="tbadge">18</span></button>
+      <button class="tab-btn"          data-tab="stategeneric"><svg class="ti"><use href="#s-flag"/></svg>State Generic<span class="tbadge">3</span></button>
+      <button class="tab-btn"          data-tab="statepsc"><svg class="ti"><use href="#s-map"/></svg>State PSC<span class="tbadge">224</span></button>
+    </div>
+    <div id="tabContent"></div>
+  </div>
+</div>
+
+<script>
+const EXAM_DATA = {"UPSC":[{"name":"Civil Services Examination (CSE)","body":"UPSC","level":"National","eligibility":"Graduate","frequency":"Annual","questions":3380,"years":"2025 - 2008"},{"name":"Indian Forest Service (IFoS)","body":"UPSC","level":"National","eligibility":"Graduate","frequency":"Annual","questions":3380,"years":"2026 - 2008"},{"name":"Engineering Services Examination (ESE/IES)","body":"UPSC","level":"National","eligibility":"Engineering Degree","frequency":"Annual","questions":6550,"years":"2025 - 2017"},{"name":"Combined Defence Services (CDS)","body":"UPSC","level":"National","eligibility":"Graduate/12th","frequency":"Twice a Year","questions":6800,"years":"2024 - 2015"},{"name":"National Defence Academy (NDA) & NA","body":"UPSC","level":"National","eligibility":"12th","frequency":"Twice a Year","questions":6870,"years":"2024 - 2009"},{"name":"Combined Medical Services (CMS)","body":"UPSC","level":"National","eligibility":"Graduate (Medical)","frequency":"Annual","questions":2400,"years":"2025 - 2016"},{"name":"Indian Economic Service / Indian Statistical Service (IES/ISS)","body":"UPSC","level":"National","eligibility":"Postgraduate","frequency":"Annual"},{"name":"Combined Geo-Scientist Examination","body":"UPSC","level":"National","eligibility":"Graduate","frequency":"Annual","questions":2880,"years":"2025 - 2020"},{"name":"EPFO Enforcement Officer/Accounts Officer","body":"UPSC","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"Central Armed Police Forces (Assistant Commandant - CAPF AC)","body":"UPSC","level":"National","eligibility":"Graduate","frequency":"Annual"}],"SSC":[{"name":"SSC Combined Graduate Level (CGL)","body":"Staff Selection Commission (SSC)","level":"National","eligibility":"Graduate","frequency":"Annual","questions":12950,"years":"2025 - 2020"},{"name":"SSC Combined Higher Secondary Level (CHSL)","body":"SSC","level":"National","eligibility":"12th","frequency":"Annual"},{"name":"SSC Multi Tasking Staff (MTS)","body":"SSC","level":"National","eligibility":"10th","frequency":"Annual"},{"name":"SSC GD Constable","body":"SSC","level":"National","eligibility":"10th","frequency":"Annual"},{"name":"SSC Junior Engineer (JE)","body":"SSC","level":"National","eligibility":"Diploma/Engineering","frequency":"Annual"},{"name":"SSC CPO (SI)","body":"SSC","level":"National","eligibility":"Graduate","frequency":"Annual"},{"name":"SSC Stenographer Grade C & D","body":"SSC","level":"National","eligibility":"12th/10th","frequency":"Annual"},{"name":"SSC Selection Post (Phase-wise)","body":"SSC","level":"National","eligibility":"10th/12th/Graduate","frequency":"Varies"},{"name":"SSC CHSL DEO (Data Entry Operator)","body":"SSC","level":"National","eligibility":"12th","frequency":"Varies"}],"Banking":[{"name":"IBPS PO","body":"IBPS","level":"National","eligibility":"Graduate","frequency":"Annual","questions":4862,"years":"2026 - 2012"},{"name":"IBPS Clerk","body":"IBPS","level":"National","eligibility":"Graduate","frequency":"Annual","questions":4862,"years":"2026 - 2012"},{"name":"IBPS RRB Officer Scale I (PO)","body":"IBPS","level":"National","eligibility":"Graduate","frequency":"Annual","questions":4862,"years":"2026 - 2012"},{"name":"IBPS RRB Office Assistant (Clerk)","body":"IBPS","level":"National","eligibility":"12th/Graduate","frequency":"Annual","questions":4862,"years":"2026 - 2012"},{"name":"IBPS Specialist Officer (SO)","body":"IBPS","level":"National","eligibility":"Graduate","frequency":"Varies","questions":4862,"years":"2026 - 2012"},{"name":"SBI PO","body":"State Bank of India (SBI)","level":"National","eligibility":"Graduate","frequency":"Annual","questions":8151,"years":"2025 - 2012"},{"name":"SBI Clerk","body":"SBI","level":"National","eligibility":"Graduate","frequency":"Annual","questions":8151,"years":"2025 - 2012"},{"name":"RBI Grade B","body":"Reserve Bank of India (RBI)","level":"National","eligibility":"Graduate","frequency":"Annual","questions":8151,"years":"2025 - 2012"},{"name":"RBI Assistant","body":"RBI","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"NABARD Grade A","body":"NABARD","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"NABARD Grade B","body":"NABARD","level":"National","eligibility":"Postgraduate","frequency":"Varies"},{"name":"SIDBI Grade A","body":"SIDBI","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"EXIM Bank Recruitment","body":"EXIM Bank","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"IPPB / Regional Rural Bank (RBI-linked) Recruitment - Variant 4","body":"IPPB / RRBs","level":"National/Regional","eligibility":"Graduate","frequency":"Varies"},{"name":"IPPB / Regional Rural Bank (RBI-linked) Recruitment - Variant 1","body":"IPPB / RRBs","level":"National/Regional","eligibility":"Graduate","frequency":"Varies"},{"name":"IPPB / Regional Rural Bank (RBI-linked) Recruitment - Variant 5","body":"IPPB / RRBs","level":"National/Regional","eligibility":"Graduate","frequency":"Varies"},{"name":"IPPB / Regional Rural Bank (RBI-linked) Recruitment - Variant 2","body":"IPPB / RRBs","level":"National/Regional","eligibility":"Graduate","frequency":"Varies"}],"Insurance":[{"name":"LIC AAO","body":"LIC","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"LIC ADO","body":"LIC","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"NIACL AO","body":"New India Assurance","level":"National","eligibility":"Graduate","frequency":"Annual/Varies"},{"name":"NIACL Assistant","body":"New India Assurance","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"UIIC AO","body":"United India Insurance Company","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"GIC Assistant Manager (AM)","body":"GIC","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"AIC Management Trainee (MTS)","body":"Agriculture Insurance Company","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"Specialized Insurance Officer Exams (various) - Variant 1","body":"Insurance Companies","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"Specialized Insurance Officer Exams (various) - Variant 2","body":"Insurance Companies","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"Specialized Insurance Officer Exams (various) - Variant 3","body":"Insurance Companies","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"Specialized Insurance Officer Exams (various) - Variant 4","body":"Insurance Companies","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"Specialized Insurance Officer Exams (various) - Variant 5","body":"Insurance Companies","level":"National","eligibility":"Graduate","frequency":"Varies"}],"Railways":[{"name":"RRB NTPC","body":"Railway Recruitment Board (RRB)","level":"National","eligibility":"12th/Graduate","frequency":"Varies","questions":29000,"years":"2026 - 2010"},{"name":"RRB Group D","body":"RRB","level":"National","eligibility":"10th","frequency":"Varies","questions":29000,"years":"2026 - 2010"},{"name":"RRB ALP","body":"RRB","level":"National","eligibility":"12th/Diploma","frequency":"Varies"},{"name":"RRB JE","body":"RRB","level":"National","eligibility":"Diploma/Engineering","frequency":"Varies","questions":29000,"years":"2026 - 2010"},{"name":"RRB Technician","body":"RRB","level":"National","eligibility":"ITI/Diploma","frequency":"Varies"},{"name":"RPF Constable","body":"Railway Protection Force (RPF)","level":"National","eligibility":"10th/12th","frequency":"Varies"},{"name":"RPF Sub-Inspector (SI)","body":"RPF","level":"National","eligibility":"12th/Graduate","frequency":"Varies"},{"name":"Railway Zone-specific Technician/Technical Assistant (Zone variant) - Variant 3","body":"Railway Zone","level":"National","eligibility":"Diploma/Graduate","frequency":"Varies"},{"name":"Railway Zone-specific Technician/Technical Assistant (Zone variant) - Variant 4","body":"Railway Zone","level":"National","eligibility":"Diploma/Graduate","frequency":"Varies"},{"name":"Railway Zone-specific Technician/Technical Assistant (Zone variant) - Variant 5","body":"Railway Zone","level":"National","eligibility":"Diploma/Graduate","frequency":"Varies"},{"name":"IPPB / Regional Rural Bank (RBI-linked) Recruitment - Variant 3","body":"IPPB / RRBs","level":"National/Regional","eligibility":"Graduate","frequency":"Varies"},{"name":"Railway Zone-specific Technician/Technical Assistant (Zone variant) - Variant 1","body":"Railway Zone","level":"National","eligibility":"Diploma/Graduate","frequency":"Varies"},{"name":"Railway Zone-specific Technician/Technical Assistant (Zone variant) - Variant 2","body":"Railway Zone","level":"National","eligibility":"Diploma/Graduate","frequency":"Varies"}],"Defence":[{"name":"AFCAT","body":"Indian Air Force","level":"National","eligibility":"Graduate/12th","frequency":"Twice a Year","questions":3500,"years":"2026 - 2011"},{"name":"Indian Navy SSR","body":"Indian Navy","level":"National","eligibility":"12th","frequency":"Varies"},{"name":"Indian Navy AA","body":"Indian Navy","level":"National","eligibility":"12th","frequency":"Varies"},{"name":"Indian Army Agniveer","body":"Indian Army","level":"National","eligibility":"10th/12th","frequency":"Varies"},{"name":"Territorial Army Officer","body":"Indian Army","level":"National","eligibility":"Graduate","frequency":"Annual"},{"name":"Coast Guard Navik / Yantrik","body":"Indian Coast Guard","level":"National","eligibility":"10th/12th/Graduate","frequency":"Varies"},{"name":"Military Nursing Service (MNS)","body":"DGMS / Armed Forces","level":"National","eligibility":"Nursing Qualification","frequency":"Varies"}],"Teaching":[{"name":"CTET","body":"CBSE","level":"National","eligibility":"Graduate/12th","frequency":"Twice a Year"},{"name":"UGC NET","body":"UGC / NTA","level":"National","eligibility":"Postgraduate","frequency":"Twice a Year"},{"name":"KVS Recruitment PRT/TGT/PGT","body":"KVS","level":"National","eligibility":"Graduate/B.Ed","frequency":"Varies"},{"name":"NVS Recruitment","body":"NVS","level":"National","eligibility":"Graduate/B.Ed","frequency":"Varies"},{"name":"DSSSB Teaching Posts","body":"DSSSB","level":"State/National","eligibility":"Graduate","frequency":"Varies"},{"name":"State TET (All States Individual)","body":"State Education Boards","level":"State","eligibility":"12th/Graduate","frequency":"Varies"}],"Judiciary":[{"name":"State Judicial Services (Civil Judge)","body":"State High Courts / PSC","level":"State","eligibility":"Law Graduate","frequency":"Varies"},{"name":"District Judge Recruitment","body":"State High Courts","level":"State","eligibility":"Law Graduate","frequency":"Varies"},{"name":"High Court Clerk / Junior Assistant","body":"State High Courts","level":"State","eligibility":"12th/Graduate","frequency":"Varies"},{"name":"Lower Judiciary (Judicial Magistrate)","body":"State Judiciary","level":"State","eligibility":"Law Graduate","frequency":"Varies"}],"PSU":[{"name":"ONGC Graduate Trainee / GATE-based Recruitment","body":"ONGC","level":"National","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"IOCL Recruitment (Executive / Technical)","body":"IOCL","level":"National","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"BHEL Recruitment (Executive / Technician)","body":"BHEL","level":"National","eligibility":"Engineering/ITI","frequency":"Varies"},{"name":"SAIL Recruitment","body":"SAIL","level":"National","eligibility":"Graduate/ITI/Engineering","frequency":"Varies"},{"name":"NTPC Executive Trainee","body":"NTPC","level":"National","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"BEL Recruitment","body":"BEL","level":"National","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"DRDO Scientist / Technician Recruitment","body":"DRDO","level":"National","eligibility":"Engineering/Science","frequency":"Varies"},{"name":"ISRO Scientist / Technical Recruitment","body":"ISRO","level":"National","eligibility":"Engineering/Science","frequency":"Varies"},{"name":"HAL Recruitment","body":"HAL","level":"National","eligibility":"Engineering/ITI","frequency":"Varies"},{"name":"Coal India Recruitment","body":"Coal India","level":"National","eligibility":"Graduate/Engineering","frequency":"Varies"},{"name":"Power Grid Recruitment","body":"Power Grid","level":"National","eligibility":"Graduate/Engineering","frequency":"Varies"},{"name":"NPCIL Recruitment","body":"NPCIL","level":"National","eligibility":"Engineering/Science","frequency":"Varies"},{"name":"GAIL Executive Trainee Recruitment - Variant 1","body":"GAIL","level":"National","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"BEML Recruitment (Technical / Management) - Variant 1","body":"BEML","level":"National","eligibility":"Graduate/ITI","frequency":"Varies"},{"name":"MRPL / ONGC / IOCL - Additional Specific Notices - Variant 1","body":"Various PSUs","level":"National","eligibility":"Graduate/Engineering","frequency":"Varies"},{"name":"BEML Recruitment (Technical / Management) - Variant 2","body":"BEML","level":"National","eligibility":"Graduate/ITI","frequency":"Varies"},{"name":"GAIL Executive Trainee Recruitment - Variant 2","body":"GAIL","level":"National","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"MRPL / ONGC / IOCL - Additional Specific Notices - Variant 2","body":"Various PSUs","level":"National","eligibility":"Graduate/Engineering","frequency":"Varies"},{"name":"GAIL Executive Trainee Recruitment - Variant 3","body":"GAIL","level":"National","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"BEML Recruitment (Technical / Management) - Variant 3","body":"BEML","level":"National","eligibility":"Graduate/ITI","frequency":"Varies"},{"name":"MRPL / ONGC / IOCL - Additional Specific Notices - Variant 3","body":"Various PSUs","level":"National","eligibility":"Graduate/Engineering","frequency":"Varies"},{"name":"GAIL Executive Trainee Recruitment - Variant 4","body":"GAIL","level":"National","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"BEML Recruitment (Technical / Management) - Variant 4","body":"BEML","level":"National","eligibility":"Graduate/ITI","frequency":"Varies"},{"name":"MRPL / ONGC / IOCL - Additional Specific Notices - Variant 4","body":"Various PSUs","level":"National","eligibility":"Graduate/Engineering","frequency":"Varies"},{"name":"GAIL Executive Trainee Recruitment - Variant 5","body":"GAIL","level":"National","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"BEML Recruitment (Technical / Management) - Variant 5","body":"BEML","level":"National","eligibility":"Graduate/ITI","frequency":"Varies"},{"name":"MRPL / ONGC / IOCL - Additional Specific Notices - Variant 5","body":"Various PSUs","level":"National","eligibility":"Graduate/Engineering","frequency":"Varies"}],"Healthcare":[{"name":"AIIMS Nursing / Paramedical Recruitment","body":"AIIMS / NTA","level":"National","eligibility":"Nursing/Paramedical","frequency":"Varies"},{"name":"ESIC Staff Nurse / Paramedical","body":"ESIC","level":"National/State","eligibility":"Nursing/Paramedical","frequency":"Varies"},{"name":"State Medical Officer / Medical Officer (State Recruits)","body":"State Health Dept.","level":"State","eligibility":"MBBS/Medical","frequency":"Varies"},{"name":"ANM / GNM / Staff Nurse State Exams","body":"State Health Dept.","level":"State","eligibility":"Diploma/Nursing","frequency":"Varies"},{"name":"Pharmacist / Lab Technician Recruitment","body":"State/Central Boards","level":"State/National","eligibility":"Diploma/Graduate","frequency":"Varies"},{"name":"Central Government Medical College / Hospital Recruitment - Variant 1","body":"Central Medical Institutes","level":"National","eligibility":"Medical","frequency":"Varies"},{"name":"Central Government Medical College / Hospital Recruitment - Variant 2","body":"Central Medical Institutes","level":"National","eligibility":"Medical","frequency":"Varies"},{"name":"Central Government Medical College / Hospital Recruitment - Variant 3","body":"Central Medical Institutes","level":"National","eligibility":"Medical","frequency":"Varies"},{"name":"Central Government Medical College / Hospital Recruitment - Variant 4","body":"Central Medical Institutes","level":"National","eligibility":"Medical","frequency":"Varies"},{"name":"Central Government Medical College / Hospital Recruitment - Variant 5","body":"Central Medical Institutes","level":"National","eligibility":"Medical","frequency":"Varies"}],"Technical":[{"name":"CPWD JE / AE","body":"CPWD","level":"Central","eligibility":"Diploma/Engineering","frequency":"Varies"},{"name":"DMRC (Delhi Metro) Technician / JE","body":"DMRC","level":"Urban/State","eligibility":"ITI/Diploma","frequency":"Varies"},{"name":"BSNL / MTNL Technical Recruitment","body":"BSNL/MTNL","level":"National/State","eligibility":"Engineering/Graduate","frequency":"Varies"},{"name":"NIC / MeitY Technical Hiring","body":"National Informatics Centre (NIC)","level":"National","eligibility":"Graduate/Engineering","frequency":"Varies"}],"Central Police":[{"name":"BSF Recruitment (Constable / SI)","body":"BSF","level":"National","eligibility":"10th/12th/Graduate","frequency":"Varies"},{"name":"CRPF Recruitment (Constable / SI)","body":"CRPF","level":"National","eligibility":"10th/12th/Graduate","frequency":"Varies"},{"name":"CISF Recruitment (Assistants / SI)","body":"CISF","level":"National","eligibility":"10th/12th/Graduate","frequency":"Varies"},{"name":"ITBP Recruitment","body":"ITBP","level":"National","eligibility":"10th/12th/Graduate","frequency":"Varies"},{"name":"SSB / Assam Rifles Recruitment","body":"SSB / Assam Rifles","level":"National","eligibility":"10th/12th/Graduate","frequency":"Varies","questions":922,"years":"2025 - 2020"}],"Other":[{"name":"India Post GDS / Postman / Mail Guard Recruitment","body":"India Post","level":"National","eligibility":"10th/12th","frequency":"Varies"},{"name":"Cantonment Board Recruitment (Clerk / Skilled Posts)","body":"Cantonment Boards","level":"Local/National","eligibility":"10th/12th/Graduate","frequency":"Varies"},{"name":"Apprenticeship Vacancies (Railways / PSUs / Industry)","body":"Apprenticeship Boards / PSUs","level":"National/State","eligibility":"ITI/Diploma/Graduate","frequency":"Varies"},{"name":"Municipal Corporation / Urban Local Body Recruitments","body":"Municipal Corporations","level":"Local/State","eligibility":"10th/12th/Graduate","frequency":"Varies"},{"name":"State Cooperative Bank Recruitment (clerical / officer) - Variant 1","body":"State Cooperative Banks","level":"State","eligibility":"Graduate/12th","frequency":"Varies"},{"name":"Supreme Court / National Judicial Service Office - Junior Assistant - Variant 1","body":"Supreme Court / NJA","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"State Cooperative Bank Recruitment (clerical / officer) - Variant 2","body":"State Cooperative Banks","level":"State","eligibility":"Graduate/12th","frequency":"Varies"},{"name":"National Cadet Corps (NCC) / Sports Authority recruitments - Variant 1","body":"SAI / NCC","level":"National/State","eligibility":"Varies","frequency":"Varies"},{"name":"Supreme Court / National Judicial Service Office - Junior Assistant - Variant 2","body":"Supreme Court / NJA","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"National Cadet Corps (NCC) / Sports Authority recruitments - Variant 2","body":"SAI / NCC","level":"National/State","eligibility":"Varies","frequency":"Varies"},{"name":"State Cooperative Bank Recruitment (clerical / officer) - Variant 3","body":"State Cooperative Banks","level":"State","eligibility":"Graduate/12th","frequency":"Varies"},{"name":"Supreme Court / National Judicial Service Office - Junior Assistant - Variant 3","body":"Supreme Court / NJA","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"National Cadet Corps (NCC) / Sports Authority recruitments - Variant 3","body":"SAI / NCC","level":"National/State","eligibility":"Varies","frequency":"Varies"},{"name":"State Cooperative Bank Recruitment (clerical / officer) - Variant 4","body":"State Cooperative Banks","level":"State","eligibility":"Graduate/12th","frequency":"Varies"},{"name":"Supreme Court / National Judicial Service Office - Junior Assistant - Variant 4","body":"Supreme Court / NJA","level":"National","eligibility":"Graduate","frequency":"Varies"},{"name":"National Cadet Corps (NCC) / Sports Authority recruitments - Variant 4","body":"SAI / NCC","level":"National/State","eligibility":"Varies","frequency":"Varies"},{"name":"State Cooperative Bank Recruitment (clerical / officer) - Variant 5","body":"State Cooperative Banks","level":"State","eligibility":"Graduate/12th","frequency":"Varies"},{"name":"Supreme Court / National Judicial Service Office - Junior Assistant - Variant 5","body":"Supreme Court / NJA","level":"National","eligibility":"Graduate","frequency":"Varies"}],"State Generic":[{"name":"State Lecturer / Assistant Professor Recruitment (All States)","body":"State Higher Education Department","level":"State","eligibility":"Postgraduate / PhD","frequency":"Varies"},{"name":"State Fisheries / Agriculture Department Recruitment (All States)","body":"State Agriculture Dept.","level":"State","eligibility":"Graduate/Diploma","frequency":"Varies"},{"name":"State Forest Guard / Ranger Recruitment (All States)","body":"State Forest Dept.","level":"State","eligibility":"10th/12th/Graduate","frequency":"Varies"}],"_states":{"Andhra Pradesh":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Andhra Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Andhra Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Andhra Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Andhra Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Andhra Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Andhra Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Andhra Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Andhra Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Arunachal Pradesh":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Arunachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Arunachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Arunachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Arunachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Arunachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Arunachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Arunachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Arunachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Assam":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Assam)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Assam)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Assam)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Assam)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Assam)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Assam)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Assam)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Assam)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Bihar":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Bihar)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Bihar)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Bihar)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Bihar)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Bihar)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Bihar)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Bihar)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Bihar)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Chhattisgarh":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Chhattisgarh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Chhattisgarh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Chhattisgarh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Chhattisgarh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Chhattisgarh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Chhattisgarh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Chhattisgarh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Chhattisgarh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Goa":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Goa)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Goa)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Goa)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Goa)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Goa)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Goa)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Goa)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Goa)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Gujarat":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Gujarat)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Gujarat)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Gujarat)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Gujarat)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Gujarat)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Gujarat)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Gujarat)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Gujarat)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Haryana":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Haryana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Haryana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Haryana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Haryana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Haryana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Haryana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Haryana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Haryana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Himachal Pradesh":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Himachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Himachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Himachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Himachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Himachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Himachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Himachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Himachal Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Jharkhand":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Jharkhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Jharkhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Jharkhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Jharkhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Jharkhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Jharkhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Jharkhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Jharkhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Karnataka":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Karnataka)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Karnataka)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Karnataka)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Karnataka)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Karnataka)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Karnataka)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Karnataka)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Karnataka)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Kerala":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Kerala)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Kerala)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Kerala)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Kerala)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Kerala)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Kerala)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Kerala)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Kerala)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Madhya Pradesh":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Madhya Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Madhya Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Madhya Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Madhya Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Madhya Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Madhya Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Madhya Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Madhya Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Maharashtra":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Maharashtra)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Maharashtra)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Maharashtra)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Maharashtra)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Maharashtra)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Maharashtra)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Maharashtra)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Maharashtra)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Manipur":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Manipur)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Manipur)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Manipur)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Manipur)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Manipur)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Manipur)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Manipur)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Manipur)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Meghalaya":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Meghalaya)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Meghalaya)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Meghalaya)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Meghalaya)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Meghalaya)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Meghalaya)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Meghalaya)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Meghalaya)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Mizoram":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Mizoram)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Mizoram)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Mizoram)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Mizoram)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Mizoram)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Mizoram)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Mizoram)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Mizoram)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Nagaland":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Nagaland)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Nagaland)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Nagaland)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Nagaland)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Nagaland)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Nagaland)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Nagaland)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Nagaland)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Odisha":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Odisha)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Odisha)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Odisha)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Odisha)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Odisha)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Odisha)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Odisha)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Odisha)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Punjab":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Punjab)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Punjab)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Punjab)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Punjab)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Punjab)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Punjab)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Punjab)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Punjab)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Rajasthan":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Rajasthan)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Rajasthan)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Rajasthan)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Rajasthan)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Rajasthan)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Rajasthan)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Rajasthan)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Rajasthan)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Sikkim":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Sikkim)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Sikkim)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Sikkim)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Sikkim)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Sikkim)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Sikkim)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Sikkim)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Sikkim)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Tamil Nadu":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Tamil Nadu)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Tamil Nadu)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Tamil Nadu)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Tamil Nadu)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Tamil Nadu)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Tamil Nadu)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Tamil Nadu)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Tamil Nadu)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Telangana":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Telangana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Telangana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Telangana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Telangana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Telangana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Telangana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Telangana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Telangana)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Tripura":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Tripura)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Tripura)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Tripura)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Tripura)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Tripura)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Tripura)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Tripura)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Tripura)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Uttar Pradesh":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Uttar Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Uttar Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Uttar Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Uttar Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Uttar Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Uttar Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Uttar Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Uttar Pradesh)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"Uttarakhand":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (Uttarakhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (Uttarakhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (Uttarakhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (Uttarakhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (Uttarakhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (Uttarakhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (Uttarakhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (Uttarakhand)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}],"West Bengal":[{"name":"State PSC Civil Services (State)","body":"State Public Service Commission (West Bengal)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Combined Services","body":"State Public Service Commission (West Bengal)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Assistant Engineer (AE/JE)","body":"State Public Service Commission (West Bengal)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Police Services / SI","body":"State Public Service Commission / State Police (West Bengal)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State PSC Group 2 / Group B Posts","body":"State Public Service Commission (West Bengal)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State TET (Teacher Eligibility Test)","body":"State Education Board (West Bengal)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Police Constable Recruitment","body":"State Police Department (West Bengal)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"},{"name":"State Judiciary / Civil Judge Recruitment","body":"State High Court (West Bengal)","level":"State","eligibility":"Varies (10th/12th/Graduate/Law/Engineering)","frequency":"Varies"}]}};
+
+// ─── ICON MAP per exam ───────────────────────────────────────────────────────
+const EXAM_ICONS = {
+  // UPSC
+  'Civil Services Examination (CSE)':            {icon:'s-award',    color:'ic-orange'},
+  'Indian Forest Service (IFoS)':                {icon:'s-tree',     color:'ic-green'},
+  'Engineering Services Examination (ESE/IES)':  {icon:'s-gear',     color:'ic-blue'},
+  'Combined Defence Services (CDS)':             {icon:'s-shield',   color:'ic-red'},
+  'National Defence Academy (NDA) & NA':         {icon:'s-crosshair',color:'ic-red'},
+  'Combined Medical Services (CMS)':             {icon:'s-heartpulse',color:'ic-pink'},
+  'Indian Economic Service / Indian Statistical Service (IES/ISS)':{icon:'s-trending',color:'ic-purple'},
+  'Combined Geo-Scientist Examination':          {icon:'s-compass',  color:'ic-teal'},
+  'EPFO Enforcement Officer/Accounts Officer':   {icon:'s-coins',    color:'ic-green'},
+  'Central Armed Police Forces (Assistant Commandant - CAPF AC)':{icon:'s-users', color:'ic-red'},
+  // SSC
+  'SSC Combined Graduate Level (CGL)':           {icon:'s-award',    color:'ic-blue'},
+  'SSC Combined Higher Secondary Level (CHSL)':  {icon:'s-briefcase',color:'ic-teal'},
+  'SSC Multi Tasking Staff (MTS)':               {icon:'s-layers',   color:'ic-yellow'},
+  'SSC GD Constable':                            {icon:'s-shield',   color:'ic-red'},
+  'SSC Junior Engineer (JE)':                    {icon:'s-gear',     color:'ic-orange'},
+  'SSC CPO (SI)':                                {icon:'s-crosshair',color:'ic-red'},
+  'SSC Stenographer Grade C & D':                {icon:'s-mail',     color:'ic-purple'},
+  'SSC Selection Post (Phase-wise)':             {icon:'s-filter',   color:'ic-sky'},
+  'SSC CHSL DEO (Data Entry Operator)':          {icon:'s-cpu',      color:'ic-blue'},
+  // Banking
+  'IBPS PO':                   {icon:'s-bank',      color:'ic-green'},
+  'IBPS Clerk':                {icon:'s-briefcase', color:'ic-teal'},
+  'IBPS RRB Officer Scale I (PO)':   {icon:'s-bank',  color:'ic-green'},
+  'IBPS RRB Office Assistant (Clerk)':{icon:'s-archive',color:'ic-teal'},
+  'IBPS Specialist Officer (SO)':    {icon:'s-award',  color:'ic-blue'},
+  'SBI PO':                    {icon:'s-bank',      color:'ic-blue'},
+  'SBI Clerk':                 {icon:'s-briefcase', color:'ic-sky'},
+  'RBI Grade B':               {icon:'s-coins',     color:'ic-orange'},
+  'RBI Assistant':             {icon:'s-archive',   color:'ic-orange'},
+  'NABARD Grade A':            {icon:'s-tree',      color:'ic-lime'},
+  'NABARD Grade B':            {icon:'s-trending',  color:'ic-lime'},
+  'SIDBI Grade A':             {icon:'s-trending',  color:'ic-purple'},
+  'EXIM Bank Recruitment':     {icon:'s-globe',     color:'ic-sky'},
+  // Insurance
+  'LIC AAO':                   {icon:'s-umbrella',  color:'ic-orange'},
+  'LIC ADO':                   {icon:'s-phone',     color:'ic-orange'},
+  'NIACL AO':                  {icon:'s-umbrella',  color:'ic-teal'},
+  'NIACL Assistant':           {icon:'s-briefcase', color:'ic-teal'},
+  'UIIC AO':                   {icon:'s-umbrella',  color:'ic-blue'},
+  'GIC Assistant Manager (AM)':{icon:'s-coins',     color:'ic-green'},
+  'AIC Management Trainee (MTS)':{icon:'s-tree',    color:'ic-lime'},
+  // Railways
+  'RRB NTPC':                  {icon:'s-train',     color:'ic-yellow'},
+  'RRB Group D':               {icon:'s-wrench',    color:'ic-orange'},
+  'RRB ALP':                   {icon:'s-compass',   color:'ic-yellow'},
+  'RRB JE':                    {icon:'s-gear',      color:'ic-blue'},
+  'RRB Technician':            {icon:'s-wrench',    color:'ic-teal'},
+  'RPF Constable':             {icon:'s-shield',    color:'ic-red'},
+  'RPF Sub-Inspector (SI)':    {icon:'s-crosshair', color:'ic-red'},
+  // Defence
+  'AFCAT':                     {icon:'s-plane',     color:'ic-sky'},
+  'Indian Navy SSR':           {icon:'s-anchor',    color:'ic-blue'},
+  'Indian Navy AA':            {icon:'s-anchor',    color:'ic-teal'},
+  'Indian Army Agniveer':      {icon:'s-shield',    color:'ic-red'},
+  'Territorial Army Officer':  {icon:'s-compass',   color:'ic-green'},
+  'Coast Guard Navik / Yantrik':{icon:'s-anchor',   color:'ic-teal'},
+  'Military Nursing Service (MNS)':{icon:'s-heartpulse',color:'ic-pink'},
+  // Teaching
+  'CTET':                      {icon:'s-book',      color:'ic-lime'},
+  'UGC NET':                   {icon:'s-microscope',color:'ic-purple'},
+  'KVS Recruitment PRT/TGT/PGT':{icon:'s-book',    color:'ic-teal'},
+  'NVS Recruitment':           {icon:'s-book',      color:'ic-blue'},
+  'DSSSB Teaching Posts':      {icon:'s-flag',      color:'ic-orange'},
+  'State TET (All States Individual)':{icon:'s-map',color:'ic-yellow'},
+  // Judiciary
+  'State Judicial Services (Civil Judge)':{icon:'s-scale',color:'ic-purple'},
+  'District Judge Recruitment':{icon:'s-scale',     color:'ic-blue'},
+  'High Court Clerk / Junior Assistant':{icon:'s-archive',color:'ic-teal'},
+  'Lower Judiciary (Judicial Magistrate)':{icon:'s-scale',color:'ic-orange'},
+  // PSU
+  'ONGC Graduate Trainee / GATE-based Recruitment':{icon:'s-zap',color:'ic-orange'},
+  'IOCL Recruitment (Executive / Technical)':      {icon:'s-zap',color:'ic-yellow'},
+  'BHEL Recruitment (Executive / Technician)':     {icon:'s-gear',color:'ic-blue'},
+  'SAIL Recruitment':                              {icon:'s-trending',color:'ic-red'},
+  'NTPC Executive Trainee':                        {icon:'s-zap',color:'ic-sky'},
+  'BEL Recruitment':                               {icon:'s-cpu',color:'ic-teal'},
+  'DRDO Scientist / Technician Recruitment':       {icon:'s-microscope',color:'ic-purple'},
+  'ISRO Scientist / Technical Recruitment':        {icon:'s-compass',color:'ic-blue'},
+  'HAL Recruitment':                               {icon:'s-plane',color:'ic-sky'},
+  'Coal India Recruitment':                        {icon:'s-zap',color:'ic-yellow'},
+  'Power Grid Recruitment':                        {icon:'s-activity',color:'ic-orange'},
+  'NPCIL Recruitment':                             {icon:'s-zap',color:'ic-red'},
+  // Healthcare
+  'AIIMS Nursing / Paramedical Recruitment':       {icon:'s-heartpulse',color:'ic-pink'},
+  'ESIC Staff Nurse / Paramedical':                {icon:'s-pill',color:'ic-teal'},
+  'State Medical Officer / Medical Officer (State Recruits)':{icon:'s-heartpulse',color:'ic-red'},
+  'ANM / GNM / Staff Nurse State Exams':           {icon:'s-pill',color:'ic-pink'},
+  'Pharmacist / Lab Technician Recruitment':       {icon:'s-microscope',color:'ic-green'},
+  // Technical
+  'CPWD JE / AE':              {icon:'s-gear',      color:'ic-orange'},
+  'DMRC (Delhi Metro) Technician / JE': {icon:'s-train',color:'ic-blue'},
+  'BSNL / MTNL Technical Recruitment':  {icon:'s-phone',color:'ic-teal'},
+  'NIC / MeitY Technical Hiring':       {icon:'s-cpu', color:'ic-purple'},
+  // Central Police
+  'BSF Recruitment (Constable / SI)':   {icon:'s-shield',color:'ic-red'},
+  'CRPF Recruitment (Constable / SI)':  {icon:'s-crosshair',color:'ic-orange'},
+  'CISF Recruitment (Assistants / SI)': {icon:'s-users',color:'ic-red'},
+  'ITBP Recruitment':                   {icon:'s-compass',color:'ic-blue'},
+  'SSB / Assam Rifles Recruitment':     {icon:'s-flag',color:'ic-green'},
+  // State Generic
+  'State Lecturer / Assistant Professor Recruitment (All States)':{icon:'s-book',color:'ic-purple'},
+  'State Fisheries / Agriculture Department Recruitment (All States)':{icon:'s-tree',color:'ic-lime'},
+  'State Forest Guard / Ranger Recruitment (All States)':{icon:'s-tree',color:'ic-green'},
+  // State PSC exams
+  'State PSC Civil Services (State)':   {icon:'s-award',color:'ic-orange'},
+  'State PSC Combined Services':        {icon:'s-layers',color:'ic-blue'},
+  'State PSC Assistant Engineer (AE/JE)':{icon:'s-gear',color:'ic-teal'},
+  'State PSC Police Services / SI':     {icon:'s-shield',color:'ic-red'},
+  'State PSC Group 2 / Group B Posts':  {icon:'s-briefcase',color:'ic-yellow'},
+  'State TET (Teacher Eligibility Test)':{icon:'s-book',color:'ic-lime'},
+  'State Police Constable Recruitment': {icon:'s-crosshair',color:'ic-red'},
+  'State Judiciary / Civil Judge Recruitment':{icon:'s-scale',color:'ic-purple'},
+};
+
+// ─── TAB CONFIG ──────────────────────────────────────────────────────────────
+const TABS = {
+  upsc:         {key:'UPSC',          label:'UPSC',          icon:'s-institution',color:'ic-orange', desc:'Union Public Service Commission — Premier Group A & B services'},
+  ssc:          {key:'SSC',           label:'SSC',           icon:'s-briefcase',  color:'ic-blue',   desc:'Staff Selection Commission — National level government posts'},
+  banking:      {key:'Banking',       label:'Banking',       icon:'s-bank',       color:'ic-green',  desc:'SBI, IBPS, RBI, NABARD and all banking sector recruitment'},
+  insurance:    {key:'Insurance',     label:'Insurance',     icon:'s-umbrella',   color:'ic-teal',   desc:'LIC, GIC, NIACL, UIIC and insurance sector exams'},
+  railways:     {key:'Railways',      label:'Railways',      icon:'s-train',      color:'ic-yellow', desc:'RRB NTPC, Group D, ALP, JE, RPF and railway recruitment'},
+  defence:      {key:'Defence',       label:'Defence',       icon:'s-shield',     color:'ic-red',    desc:'Army, Navy, Air Force, Coast Guard and defence recruitment'},
+  teaching:     {key:'Teaching',      label:'Teaching',      icon:'s-book',       color:'ic-lime',   desc:'CTET, UGC NET, KVS, NVS and teaching eligibility exams'},
+  judiciary:    {key:'Judiciary',     label:'Judiciary',     icon:'s-scale',      color:'ic-purple', desc:'Civil judge, judicial magistrate and court staff recruitment'},
+  psu:          {key:'PSU',           label:'PSU',           icon:'s-zap',        color:'ic-sky',    desc:'ONGC, ISRO, DRDO, BHEL and public sector unit exams'},
+  healthcare:   {key:'Healthcare',    label:'Healthcare',    icon:'s-heartpulse', color:'ic-pink',   desc:'AIIMS, ESIC, NHM and healthcare sector recruitment'},
+  technical:    {key:'Technical',     label:'Technical',     icon:'s-cpu',        color:'ic-blue',   desc:'CPWD, DMRC, BSNL, NIC and technical government posts'},
+  centralpolice:{key:'Central Police',label:'Central Police',icon:'s-users',      color:'ic-red',    desc:'BSF, CRPF, CISF, ITBP, SSB and central paramilitary exams'},
+  other:        {key:'Other',         label:'Other',         icon:'s-layers',     color:'ic-orange', desc:'India Post, Municipal, Cooperative Banks and miscellaneous exams'},
+  stategeneric: {key:'State Generic', label:'State Generic', icon:'s-flag',       color:'ic-lime',   desc:'State-level lecturer, agriculture and forest recruitment'},
+  statepsc:     {key:'_states',       label:'State PSC',     icon:'s-map',        color:'ic-purple', desc:'All 28 state PSC exams — select a state to explore'},
+};
+
+// ─── SUBCATEGORY CONFIG ──────────────────────────────────────────────────────
+const SUBCATS = {
+  upsc: [
+    {id:'civil',   label:'Civil Services',      icon:'s-award',    color:'ic-yellow', keys:['Civil Services','Forest Service','Economic','Statistical','Geo-Scientist','SO/Steno','EPFO']},
+    {id:'defence', label:'Defence Services',    icon:'s-shield',   color:'ic-red',    keys:['Defence Services','Defence Academy','CAPF']},
+    {id:'medical', label:'Medical Services',    icon:'s-heartpulse',color:'ic-pink',  keys:['Medical Services']},
+  ],
+  ssc: [
+    {id:'graduate',  label:'Graduate Level',    icon:'s-award',    color:'ic-blue',   level:'National', eligibility:'Graduate'},
+    {id:'hs',        label:'12th Level',         icon:'s-book',     color:'ic-teal',   eligibility:'12th'},
+    {id:'matric',    label:'10th Level',         icon:'s-layers',   color:'ic-yellow', eligibility:'10th'},
+  ],
+  banking: [
+    {id:'ibps',  label:'IBPS',       icon:'s-bank',      color:'ic-green',  keys:['IBPS']},
+    {id:'sbi',   label:'SBI',        icon:'s-briefcase', color:'ic-blue',   keys:['SBI']},
+    {id:'rbi',   label:'RBI / Dev Banks', icon:'s-coins',color:'ic-orange', keys:['RBI','NABARD','SIDBI','EXIM','IPPB']},
+  ],
+  insurance: [
+    {id:'lic',  label:'LIC',         icon:'s-umbrella',  color:'ic-orange', keys:['LIC']},
+    {id:'other',label:'Other Insurers',icon:'s-umbrella',color:'ic-teal',   keys:['NIACL','UIIC','GIC','AIC','Specialized']},
+  ],
+  railways: [
+    {id:'ntpc',  label:'NTPC & Admin',icon:'s-train',    color:'ic-yellow', keys:['NTPC']},
+    {id:'tech',  label:'Technical',   icon:'s-wrench',   color:'ic-orange', keys:['ALP','JE','Technician','Group D']},
+    {id:'rpf',   label:'RPF / Others',icon:'s-shield',   color:'ic-red',    keys:['RPF','Zone','RBI-linked']},
+  ],
+  defence: [
+    {id:'airforce',label:'Air Force',  icon:'s-plane',   color:'ic-sky',    keys:['AFCAT']},
+    {id:'navy',    label:'Navy',        icon:'s-anchor',  color:'ic-blue',   keys:['Navy']},
+    {id:'army',    label:'Army',        icon:'s-shield',  color:'ic-red',    keys:['Army','Territorial']},
+    {id:'other',   label:'Other',       icon:'s-compass', color:'ic-teal',   keys:['Coast Guard','Nursing']},
+  ],
+  psu: [
+    {id:'energy', label:'Energy / Oil',icon:'s-zap',     color:'ic-orange', keys:['ONGC','IOCL','NTPC','GAIL','MRPL','Coal','Power Grid','NPCIL']},
+    {id:'defence',label:'Defence / Research',icon:'s-microscope',color:'ic-purple',keys:['DRDO','ISRO','HAL','BEML','BEL']},
+    {id:'mfg',    label:'Manufacturing',icon:'s-gear',   color:'ic-blue',   keys:['BHEL','SAIL']},
+  ],
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function getExamIcon(name) {
+  if (EXAM_ICONS[name]) return EXAM_ICONS[name];
+  // fuzzy match
+  for (const [k, v] of Object.entries(EXAM_ICONS)) {
+    if (name.toLowerCase().includes(k.toLowerCase().slice(0,12))) return v;
+  }
+  return {icon:'s-briefcase', color:'ic-blue'};
+}
+
+function makeCard(exam, idx) {
+  const {icon, color} = getExamIcon(exam.name);
+  const level = exam.level && exam.level!=='nan' ? exam.level : '';
+  const elig  = exam.eligibility && exam.eligibility!=='nan' ? exam.eligibility : '';
+  const freq  = exam.frequency && exam.frequency!=='nan' ? exam.frequency : '';
+  const body  = exam.body && exam.body!=='nan' ? exam.body : '';
+  const qns   = exam.questions || 0;
+  const yrs   = exam.years || '';
+  
+  const tagCls = level==='National'?'tg-blue':level==='State'?'tg-orange':'tg-teal';
+  const progress = qns ? Math.min(100, Math.max(15, (qns / 30000) * 100)) : 0;
+
+  return `<a class="ecard" href="#" onclick="return false">
+    <div class="eico ${color}"><svg><use href="#${icon}"/></svg></div>
+    <div class="ebody">
+      <div class="ename">${exam.name}</div>
+      <div class="emeta">
+        ${body?`<span class="econd"><svg><use href="#s-building"/></svg>${body}</span>`:''}
+        ${level?`<span class="etag ${tagCls}">${level}</span>`:''}
+      </div>
+      <div class="epills">
+        ${elig?`<span class="epill"><svg><use href="#s-user"/></svg>${elig}</span>`:''}
+        ${freq?`<span class="epill"><svg><use href="#s-calendar"/></svg>${freq}</span>`:''}
+      </div>
+      ${qns ? `
+      <div class="prog-wrap">
+        <div class="prog-info">
+          <span class="p-cnt">${qns.toLocaleString()} Questions</span>
+          <span class="p-yr">${yrs}</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width: ${progress}%"></div></div>
+      </div>
+      ` : ''}
+    </div>
+    <div class="earrow"><svg><use href="#s-chevron"/></svg></div>
+  </a>`;
+}
+
+function renderGrid(items, container) {
+  if (!items.length) {
+    container.innerHTML = `<div class="empty-st"><svg><use href="#s-search"/></svg><div class="empty-title">No exams found</div><div class="empty-sub">Try a different search or filter</div></div>`;
+    return;
+  }
+  container.innerHTML = `<div class="egrid">${items.map((e,i)=>makeCard(e,i)).join('')}</div>`;
+  retrigger(container);
+}
+
+function retrigger(el) {
+  el.querySelectorAll('.ecard').forEach(c=>{c.style.animation='none';void c.offsetHeight;c.style.animation='';});
+}
+
+// ─── STATE PER-TAB ───────────────────────────────────────────────────────────
+let activeTab   = 'upsc';
+let activeFilter = {};   // {tabId: {subcat, search}}
+
+function getBaseItems(tabId) {
+  const cfg = TABS[tabId];
+  if (cfg.key === '_states') return [];
+  return EXAM_DATA[cfg.key] || [];
+}
+
+function getFilteredItems(tabId) {
+  const base = getBaseItems(tabId);
+  const f    = activeFilter[tabId] || {};
+  let items  = base;
+
+  // Subcat filter
+  if (f.subcat && f.subcat !== 'all') {
+    const sc = (SUBCATS[tabId]||[]).find(s=>s.id===f.subcat);
+    if (sc) {
+      if (sc.level)       items = items.filter(e=>e.level===sc.level);
+      else if (sc.eligibility) items = items.filter(e=>e.eligibility===sc.eligibility);
+      else if (sc.keys)   items = items.filter(e=>sc.keys.some(k=>e.name.toLowerCase().includes(k.toLowerCase())||
+                                                                  (e.body||'').toLowerCase().includes(k.toLowerCase())));
+    }
+  }
+
+  // Search
+  if (f.search) {
+    const q = f.search.toLowerCase();
+    items = items.filter(e=>
+      (e.name||'').toLowerCase().includes(q)||
+      (e.body||'').toLowerCase().includes(q)||
+      (e.eligibility||'').toLowerCase().includes(q)||
+      (e.frequency||'').toLowerCase().includes(q)
+    );
+  }
+  return items;
+}
+
+// ─── GOOGLE SHEETS LIVE SYNC ──────────────────────────────────────────────────
+async function syncWithGoogleSheet() {
+  // To make this work, your Google Sheet must be publicly accessible:
+  // 1. Go to File -> Share -> Publish to web
+  // 2. Select the whole document or specific sheet and choose "Comma-separated values (.csv)"
+  // 3. Paste the provided URL below:
+  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/14SYIJ4MFLUITuELopxdZm3pMuynbtBzS7gfiL_03GR8/export?format=csv&gid=271114095";
+  
+  try {
+    const response = await fetch(SHEET_CSV_URL);
+    if (!response.ok) throw new Error("Could not fetch the Google Sheet. Please ensure it is publicly accessible (Anyone with the link can view) or Published to Web.");
+    
+    const csvText = await response.text();
+    // Parse the CSV here (using PapaParse or custom logic)
+    // Then map the rows back to EXAM_DATA format and re-render the grid.
+    console.log("Successfully fetched CSV! Ready to parse.", csvText.slice(0, 100));
+  } catch(error) {
+    console.warn("Google Sheet Sync Error:", error.message);
+  }
+}
+
+// Optional: Automatically try to sync on page load
+// syncWithGoogleSheet();
+
+// ─── BUILD TABS ──────────────────────────────────────────────────────────────
+function buildAll() {
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>switchTab(btn.dataset.tab, btn));
+  });
+
+  const container = document.getElementById('tabContent');
+  let html = '';
+
+  Object.entries(TABS).forEach(([tabId, cfg]) => {
+    const isState = cfg.key==='_states';
+    html += `<div class="tab-body hidden" id="tab-${tabId}">`;
+
+    if (isState) {
+      html += buildStateTab();
+    } else {
+      html += buildRegTab(tabId, cfg);
+    }
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+
+  // Wire state search
+  const stateSearchEl = document.getElementById('state-search');
+  if (stateSearchEl) stateSearchEl.addEventListener('input', filterStates);
+
+  // Show first tab
+  activateTab('upsc');
+}
+
+function buildRegTab(tabId, cfg) {
+  const items = getBaseItems(tabId);
+  const scs   = SUBCATS[tabId] || [];
+
+  // Build sidebar
+  let sidebar = `<div class="sidebar" id="sidebar-${tabId}">
+    <div class="slabel">Filter</div>
+    <div class="sitem active" id="scat-${tabId}-all" onclick="setSubcat('${tabId}','all',this)">
+      <div class="sil">
+        <div class="siwrap ${cfg.color}"><svg><use href="#${cfg.icon}"/></svg></div>
+        <div><div class="sname">All ${cfg.label}</div><div class="scount">${items.length} exams</div></div>
+      </div>
+      <svg class="sarr"><use href="#s-chevron"/></svg>
+    </div>`;
+
+  scs.forEach(sc=>{
+    let cnt = items.length;
+    if (sc.level) cnt = items.filter(e=>e.level===sc.level).length;
+    else if (sc.eligibility) cnt = items.filter(e=>e.eligibility===sc.eligibility).length;
+    else if (sc.keys) cnt = items.filter(e=>sc.keys.some(k=>e.name.toLowerCase().includes(k.toLowerCase())||(e.body||'').toLowerCase().includes(k.toLowerCase()))).length;
+    sidebar += `<div class="sitem" id="scat-${tabId}-${sc.id}" onclick="setSubcat('${tabId}','${sc.id}',this)">
+      <div class="sil">
+        <div class="siwrap ${sc.color}"><svg><use href="#${sc.icon}"/></svg></div>
+        <div><div class="sname">${sc.label}</div><div class="scount">${cnt} exams</div></div>
+      </div>
+      <svg class="sarr"><use href="#s-chevron"/></svg>
+    </div>`;
+  });
+  sidebar += `</div>`;
+
+  // Level quick-filter chips
+  const levels = [...new Set(items.map(e=>e.level).filter(l=>l&&l!=='nan'))];
+  let chips = '';
+  if (levels.length > 1) {
+    chips = `<div class="filter-row" id="chips-${tabId}">
+      <span style="font-size:10px;color:var(--tm);display:flex;align-items:center;gap:4px;padding:5px 0"><svg width="10" height="10"><use href="#s-filter"/></svg>Level:</span>
+      ${levels.map(l=>{
+        const cls = l==='National'?'tg-blue':l==='State'?'tg-orange':'tg-teal';
+        return `<button class="fchip" data-level="${l}" data-tab="${tabId}" onclick="toggleLevelChip(this)">${l}<span class="fchip-count">${items.filter(e=>e.level===l).length}</span></button>`;
+      }).join('')}
+    </div>`;
+  }
+
+  const panel = `<div class="panel" id="panel-${tabId}">
+    <div class="phead">
+      <div class="picon ${cfg.color}"><svg><use href="#${cfg.icon}"/></svg></div>
+      <div>
+        <div class="ptit" id="ptit-${tabId}">${cfg.label} — All Exams</div>
+        <div class="pdsc">${cfg.desc}</div>
+      </div>
+      <div class="pcnt" id="pcnt-${tabId}">${items.length} exams</div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-ico"><svg><use href="#s-search"/></svg></span>
+      <input class="search-input" id="srch-${tabId}" type="text" placeholder="Search by name, body, eligibility…" oninput="onSearch('${tabId}',this.value)"/>
+      <span class="search-cnt" id="scnt-${tabId}"></span>
+    </div>
+    ${chips}
+    <div class="grid-area" id="grid-${tabId}"></div>
+  </div>`;
+
+  return sidebar + panel;
+}
+
+function buildStateTab() {
+  const states = Object.entries(EXAM_DATA._states).sort((a,b)=>a[0].localeCompare(b[0]));
+  return `<div class="state-wrap">
+    <div class="phead" style="position:static;margin-bottom:18px;padding:0 0 18px">
+      <div class="picon ic-purple"><svg><use href="#s-map"/></svg></div>
+      <div><div class="ptit">State PSC — 28 States · 224 Exams</div><div class="pdsc">Select a state to view all its PSC, Police, TET, Judiciary and other recruitment exams</div></div>
+      <div class="pcnt">224 exams</div>
+    </div>
+    <div class="state-search-wrap">
+      <span class="sstate-ico"><svg><use href="#s-search"/></svg></span>
+      <input id="state-search" class="state-search" type="text" placeholder="Search states…"/>
+    </div>
+    <div class="sgrid" id="sgrid">
+      ${states.map(([state,exams])=>`
+        <button class="sbtn" data-state="${state}" onclick="selectState('${state}',this)">
+          <div class="sbtn-icon"><svg width="12" height="12"><use href="#s-map"/></svg></div>
+          <div><div class="sbn">${state}</div><div class="sbc">${exams.length} exams</div></div>
+        </button>`).join('')}
+    </div>
+    <div id="state-panel" class="hidden">
+      <div class="se-head">
+        <svg width="16" height="16" style="color:var(--acc)"><use href="#s-map"/></svg>
+        <div class="se-title" id="se-title">—</div>
+        <span class="se-badge" id="se-badge">0</span>
+        <button class="se-back" onclick="closeStatePanel()"><svg><use href="#s-chevl"/></svg>All States</button>
+      </div>
+      <div class="egrid" id="se-grid"></div>
+    </div>
+  </div>`;
+}
+
+// ─── INTERACTIONS ─────────────────────────────────────────────────────────────
+
+function activateTab(tabId) {
+  activeTab = tabId;
+  document.querySelectorAll('.tab-body').forEach(t=>t.classList.add('hidden'));
+  const el = document.getElementById('tab-'+tabId);
+  if (el) {el.classList.remove('hidden');el.style.display='flex';}
+  if (TABS[tabId]?.key !== '_states') {
+    if (!activeFilter[tabId]) activeFilter[tabId] = {subcat:'all', search:'', level:null};
+    refreshPanel(tabId);
+  }
+}
+
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activateTab(tabId);
+}
+
+function setSubcat(tabId, subcatId, el) {
+  // Clear active
+  document.querySelectorAll(`#sidebar-${tabId} .sitem`).forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  if (!activeFilter[tabId]) activeFilter[tabId] = {};
+  activeFilter[tabId].subcat = subcatId;
+  // Clear level chips when switching subcat
+  document.querySelectorAll(`#chips-${tabId} .fchip`).forEach(c=>c.classList.remove('active'));
+  activeFilter[tabId].level = null;
+  refreshPanel(tabId);
+}
+
+function toggleLevelChip(btn) {
+  const tabId = btn.dataset.tab;
+  const level = btn.dataset.level;
+  if (!activeFilter[tabId]) activeFilter[tabId] = {subcat:'all'};
+  const isActive = btn.classList.contains('active');
+  // Toggle — one at a time
+  document.querySelectorAll(`#chips-${tabId} .fchip`).forEach(c=>c.classList.remove('active'));
+  if (!isActive) {
+    btn.classList.add('active');
+    activeFilter[tabId].levelFilter = level;
+  } else {
+    activeFilter[tabId].levelFilter = null;
+  }
+  // Reset subcat to all
+  document.querySelectorAll(`#sidebar-${tabId} .sitem`).forEach(s=>s.classList.remove('active'));
+  const allBtn = document.getElementById(`scat-${tabId}-all`);
+  if (allBtn) allBtn.classList.add('active');
+  activeFilter[tabId].subcat = 'all';
+  refreshPanel(tabId);
+}
+
+function onSearch(tabId, val) {
+  if (!activeFilter[tabId]) activeFilter[tabId] = {subcat:'all'};
+  activeFilter[tabId].search = val.trim();
+  refreshPanel(tabId);
+}
+
+function refreshPanel(tabId) {
+  const cfg   = TABS[tabId];
+  const base  = getBaseItems(tabId);
+  const f     = activeFilter[tabId] || {};
+  let items   = base;
+
+  // Apply subcat
+  if (f.subcat && f.subcat !== 'all') {
+    const sc = (SUBCATS[tabId]||[]).find(s=>s.id===f.subcat);
+    if (sc) {
+      if (sc.level)            items = items.filter(e=>e.level===sc.level);
+      else if (sc.eligibility) items = items.filter(e=>e.eligibility===sc.eligibility);
+      else if (sc.keys)        items = items.filter(e=>sc.keys.some(k=>
+        e.name.toLowerCase().includes(k.toLowerCase())||
+        (e.body||'').toLowerCase().includes(k.toLowerCase())
+      ));
+    }
+  }
+
+  // Apply level chip filter
+  if (f.levelFilter) {
+    items = items.filter(e=>e.level===f.levelFilter);
+  }
+
+  // Apply search
+  if (f.search) {
+    const q = f.search.toLowerCase();
+    items = items.filter(e=>
+      (e.name||'').toLowerCase().includes(q)||
+      (e.body||'').toLowerCase().includes(q)||
+      (e.eligibility||'').toLowerCase().includes(q)||
+      (e.frequency||'').toLowerCase().includes(q)
+    );
+  }
+
+  // Update panel header
+  const titleEl = document.getElementById('ptit-'+tabId);
+  const cntEl   = document.getElementById('pcnt-'+tabId);
+  const scntEl  = document.getElementById('scnt-'+tabId);
+
+  if (titleEl) {
+    const sc = (SUBCATS[tabId]||[]).find(s=>s.id===f.subcat);
+    titleEl.textContent = cfg.label + (sc ? ' — ' + sc.label : ' — All Exams');
+  }
+  if (cntEl) cntEl.textContent = items.length + ' exam' + (items.length!==1?'s':'');
+  if (scntEl) scntEl.textContent = f.search ? items.length + ' found' : '';
+
+  // Render
+  const grid = document.getElementById('grid-'+tabId);
+  if (grid) renderGrid(items, grid);
+}
+
+// State PSC
+function selectState(state, btn) {
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const exams = EXAM_DATA._states[state] || [];
+  document.getElementById('se-title').textContent = state;
+  document.getElementById('se-badge').textContent = exams.length + ' exams';
+  const grid = document.getElementById('se-grid');
+  grid.innerHTML = exams.map((e,i)=>makeCard(e,i)).join('');
+  retrigger(grid);
+  document.getElementById('state-panel').classList.remove('hidden');
+  document.getElementById('state-panel').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function closeStatePanel() {
+  document.getElementById('state-panel').classList.add('hidden');
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));
+}
+
+function filterStates() {
+  const q = (document.getElementById('state-search').value||'').toLowerCase();
+  document.querySelectorAll('.sbtn').forEach(btn=>{
+    const name = btn.dataset.state.toLowerCase();
+    btn.style.display = name.includes(q) ? '' : 'none';
+  });
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+buildAll();
+</script>
+</body>
+</html>

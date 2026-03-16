@@ -11,9 +11,9 @@
     --bg-secondary:  #0D1117;
     --bg-card:       #121820;
     --bg-elevated:   #1A2332;
-    --accent:        #3a5bd9;
-    --accent-dim:    rgba(58,91,217,0.12);
-    --accent-border: rgba(58,91,217,0.28);
+    --accent:        #FF2D55;
+    --accent-dim:    rgba(255,45,85,0.12);
+    --accent-border: rgba(255,45,85,0.28);
     --border:        rgba(255,255,255,0.06);
     --border-hover:  rgba(255,255,255,0.11);
     --text-primary:  #FFFFFF;
@@ -134,9 +134,9 @@
     font-size: 13.5px;
     font-weight: 700;
     transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 15px rgba(58,91,217,0.3);
+    box-shadow: 0 4px 15px rgba(255,45,85,0.3);
   }
-  .nav-btn:hover { transform: translateY(-2px); background: #4a6bf0; box-shadow: 0 6px 20px rgba(58,91,217,0.4); }
+  .nav-btn:hover { transform: translateY(-2px); background: #ff4d6d; box-shadow: 0 6px 20px rgba(255,45,85,0.4); }
   .nav-btn svg { width: 16px; height: 16px; }
 
   /* ── CARD ── */
@@ -746,10 +746,16 @@
       <div class="page-title">Find Your Path to <span>Success</span></div>
       <div class="page-sub">Entrance, Government, Banking exams — and a dedicated Tech Track for engineers.</div>
     </div>
-    <a href="index1.html" class="nav-btn">
-      <svg><use href="#ic-courses"/></svg>
-      Navigate to Exams
-    </a>
+    <div style="display: flex; gap: 12px;">
+      <a href="index1.html" class="nav-btn">
+        <svg><use href="#ic-courses"/></svg>
+        Explore Exams
+      </a>
+      <a href="index2.html" class="nav-btn" style="background: var(--bg-elevated); border: 1px solid var(--border); box-shadow: none;">
+        <svg><use href="#ic-institution"/></svg>
+        Govt Directory
+      </a>
+    </div>
   </div>
 
   <div class="card">
