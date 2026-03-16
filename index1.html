@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPath — Competitive Exams India</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary:    #07090E;
+    --bg-secondary:  #0D1117;
+    --bg-card:       #121820;
+    --bg-elevated:   #1A2332;
+    --accent:        #FF2D55;
+    --accent-dim:    rgba(255,45,85,0.12);
+    --accent-border: rgba(255,45,85,0.28);
+    --border:        rgba(255,255,255,0.06);
+    --border-hover:  rgba(255,255,255,0.11);
+    --text-primary:  #FFFFFF;
+    --text-secondary:#CBD5E1;
+    --text-muted:    #94A3B8;
+
+    --green:       #00D68F; --green-dim:   rgba(0,214,143,0.10);
+    --yellow:      #FFB800; --yellow-dim:  rgba(255,184,0,0.10);
+    --red:         #FF4D4D; --red-dim:     rgba(255,77,77,0.10);
+    --blue:        #4D9EFF; --blue-dim:    rgba(77,158,255,0.10);
+    --purple:      #A78BFA; --purple-dim:  rgba(167,139,250,0.10);
+    --teal:        #2DD4BF; --teal-dim:    rgba(45,212,191,0.10);
+    --orange:      #FB923C; --orange-dim:  rgba(251,146,60,0.10);
+    --pink:        #F472B6; --pink-dim:    rgba(244,114,182,0.10);
+    --sky:         #38BDF8; --sky-dim:     rgba(56,189,248,0.10);
+    --lime:        #A3E635; --lime-dim:    rgba(163,230,53,0.10);
+
+    --ease: cubic-bezier(0.4,0,0.2,1);
+    --spring: cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @keyframes fadeUp   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+  @keyframes slideR   { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes scaleIn  { from{opacity:0;transform:scale(0.97)} to{opacity:1;transform:scale(1)} }
+
+  /* ── PAGE ── */
+  .page {
+    width:100%; height:100vh;
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.5s var(--ease) both;
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-shrink: 0;
+    animation: fadeUp 0.5s 0.05s var(--ease) both;
+  }
+
+  .nav-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 20px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(255,45,85,0.3);
+  }
+  .nav-btn:hover { transform: translateY(-2px); background: #ff4d7d; box-shadow: 0 6px 20px rgba(255,45,85,0.4); }
+  .nav-btn svg { width: 16px; height: 16px; }
+
+  .page-label {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px; font-weight:500; letter-spacing:2px;
+    text-transform:uppercase; color:var(--accent); margin-bottom:12px;
+  }
+  .page-label::before { content:''; display:inline-block; width:20px; height:1px; background:var(--accent); }
+  .page-label::after  { content:''; display:inline-block; width:4px; height:4px; border-radius:50%; background:var(--accent); margin-left:2px; box-shadow:0 0 6px var(--accent); }
+
+  .page-title {
+    font-size:28px; font-weight:700; color:var(--text-primary);
+    line-height:1.2; letter-spacing:-0.5px;
+  }
+  .page-title span { color:var(--accent); text-shadow:0 0 24px rgba(255,45,85,0.3); }
+
+  .page-sub {
+    font-size:14px; font-weight:400; color:var(--text-secondary);
+    margin-top:8px; line-height:1.6;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background:var(--bg-card);
+    border-radius:16px; border:1px solid var(--border);
+    overflow:hidden; width:100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.02),0 8px 32px rgba(0,0,0,0.4),0 32px 64px rgba(0,0,0,0.2);
+    animation: fadeUp 0.5s 0.1s var(--ease) both;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display:flex; border-bottom:1px solid var(--border);
+    background:var(--bg-secondary); padding:0 8px;
+    overflow-x:auto; gap:2px;
+    flex-shrink: 0;
+  }
+  .tabs::-webkit-scrollbar { height:0; }
+
+  .tab-btn {
+    display:flex; align-items:center; gap:8px;
+    padding:15px 20px; border:none; background:none; cursor:pointer;
+    font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500;
+    color:var(--text-muted); border-bottom:2px solid transparent;
+    margin-bottom:-1px; white-space:nowrap;
+    transition:color .2s var(--ease),border-color .2s var(--ease),background .2s;
+    border-radius:8px 8px 0 0;
+  }
+  .tab-icon { width:15px; height:15px; opacity:0.6; transition:opacity .2s; flex-shrink:0; }
+  .tab-btn:hover { color:var(--text-secondary); }
+  .tab-btn:hover .tab-icon { opacity:0.7; }
+  .tab-btn.active { color:var(--text-primary); border-bottom-color:var(--accent); font-weight:600; }
+  .tab-btn.active .tab-icon { opacity:1; }
+
+  .tab-badge {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px; font-weight:600; padding:2px 7px;
+    border-radius:20px; background:rgba(255,255,255,0.05);
+    color:var(--text-muted); border:1px solid var(--border);
+    transition:background .2s,color .2s,border-color .2s;
+  }
+  .tab-btn.active .tab-badge { background:var(--accent-dim); color:var(--accent); border-color:var(--accent-border); }
+
+  /* ── TAB BODY ── */
+  .tab-body { 
+    display:flex; 
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .cat-list {
+    width:230px; flex-shrink:0;
+    border-right:1px solid var(--border);
+    padding:14px 8px; background:var(--bg-secondary);
+    animation: slideR 0.35s 0.18s var(--ease) both;
+    overflow-y:auto;
+    height: 100%;
+  }
+  .cat-list::-webkit-scrollbar { width:3px; }
+  .cat-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.06); border-radius:4px; }
+
+  .cat-group-label {
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px; font-weight:600; letter-spacing:2px;
+    text-transform:uppercase; color:var(--text-muted);
+    padding:8px 12px 8px; opacity:0.6;
+  }
+
+  .cat-item {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 11px; cursor:pointer; border-radius:9px;
+    margin-bottom:2px; border:1px solid transparent;
+    transition:background .18s var(--ease),border-color .18s,transform .15s var(--spring);
+    will-change:transform;
+  }
+  .cat-item:hover  { background:var(--bg-elevated); transform:translateX(2px); }
+  .cat-item.active { background:var(--accent-dim); border-color:var(--accent-border); transform:translateX(3px); }
+
+  .cat-item-left { display:flex; align-items:center; gap:9px; min-width:0; }
+
+  .cat-icon-wrap {
+    width:30px; height:30px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; border:1px solid rgba(255,255,255,0.05);
+    transition:transform .2s var(--spring);
+  }
+  .cat-icon-wrap svg { width:14px; height:14px; }
+  .cat-item:hover .cat-icon-wrap,
+  .cat-item.active .cat-icon-wrap { transform:scale(1.1); }
+
+  .cat-name {
+    font-size:12.5px; font-weight:600; color:var(--text-secondary);
+    line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    transition:color .2s;
+  }
+  .cat-item.active .cat-name { color:var(--text-primary); }
+
+  .cat-count {
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px; color:var(--text-muted); margin-top:1px; font-weight:500;
+    transition:color .2s;
+  }
+  .cat-item.active .cat-count { color:var(--accent); }
+
+  .cat-arrow { color:var(--text-muted); flex-shrink:0; opacity:0.35; transition:opacity .2s,transform .2s var(--ease); }
+  .cat-item.active .cat-arrow { opacity:1; color:var(--accent); transform:translateX(2px); }
+
+  /* ── PANEL ── */
+  .sub-panel {
+    flex:1; padding:26px 30px; display:none;
+    overflow-y:auto; background:var(--bg-card);
+    height: 100%;
+  }
+  .sub-panel::-webkit-scrollbar { width:4px; }
+  .sub-panel::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.07); border-radius:4px; }
+  .sub-panel.active { display:block; animation:scaleIn .25s var(--ease) both; }
+
+  /* Panel header */
+  .panel-header {
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:22px; padding-bottom:18px;
+    border-bottom:1px solid var(--border);
+    animation:fadeUp .3s var(--ease) both;
+  }
+  .panel-icon {
+    width:42px; height:42px; border-radius:11px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; border:1px solid rgba(255,255,255,0.06);
+  }
+  .panel-icon svg { width:20px; height:20px; }
+  .panel-title { font-size:15.5px; font-weight:700; color:var(--text-primary); letter-spacing:-0.2px; }
+  .panel-desc { font-size:11.5px; color:var(--text-secondary); margin-top:3px; line-height:1.5; }
+  .panel-count {
+    margin-left:auto; flex-shrink:0;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; font-weight:600; color:var(--text-muted);
+    background:var(--bg-elevated); padding:5px 14px;
+    border-radius:20px; border:1px solid var(--border);
+  }
+
+  /* ── EXAM CARDS GRID ── */
+  .exam-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+    gap:10px;
+  }
+
+  .exam-card {
+    display:flex; align-items:flex-start; gap:12px;
+    padding:14px 16px;
+    background:var(--bg-secondary);
+    border:1px solid var(--border);
+    border-radius:11px; cursor:pointer;
+    text-decoration:none; color:inherit;
+    position:relative; overflow:hidden;
+    transition:border-color .2s var(--ease),background .2s,box-shadow .2s,transform .18s var(--spring);
+    will-change:transform;
+    opacity:0;
+    animation:fadeUp .3s var(--ease) forwards;
+  }
+
+  /* stagger */
+  .exam-card:nth-child(1)  { animation-delay:.04s }
+  .exam-card:nth-child(2)  { animation-delay:.07s }
+  .exam-card:nth-child(3)  { animation-delay:.10s }
+  .exam-card:nth-child(4)  { animation-delay:.13s }
+  .exam-card:nth-child(5)  { animation-delay:.16s }
+  .exam-card:nth-child(6)  { animation-delay:.19s }
+  .exam-card:nth-child(7)  { animation-delay:.22s }
+  .exam-card:nth-child(8)  { animation-delay:.25s }
+  .exam-card:nth-child(9)  { animation-delay:.27s }
+  .exam-card:nth-child(10) { animation-delay:.29s }
+  .exam-card:nth-child(n+11) { animation-delay:.31s }
+
+  .exam-card::before {
+    content:''; position:absolute; left:0; top:0; bottom:0;
+    width:2.5px; background:transparent; border-radius:2px 0 0 2px;
+    transition:background .2s;
+  }
+  .exam-card::after {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.07),transparent);
+    opacity:0; transition:opacity .2s;
+  }
+  .exam-card:hover {
+    border-color:var(--border-hover); background:var(--bg-elevated);
+    transform:translateY(-2px);
+    box-shadow:0 4px 18px rgba(0,0,0,0.32),0 0 0 1px rgba(255,255,255,0.03);
+  }
+  .exam-card:hover::before { background:var(--accent); }
+  .exam-card:hover::after  { opacity:1; }
+
+  /* Numbering badge */
+  .exam-num {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px; font-weight:600;
+    min-width:22px; height:22px;
+    border-radius:6px; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; margin-top:1px;
+    background:var(--bg-elevated);
+    border:1px solid var(--border);
+    color:var(--text-muted);
+    transition:background .2s,color .2s,border-color .2s;
+  }
+  .exam-card:hover .exam-num {
+    background:var(--accent-dim); color:var(--accent); border-color:var(--accent-border);
+  }
+
+  .exam-body { flex:1; min-width:0; }
+
+  .exam-name {
+    font-size:13px; font-weight:700; color:var(--text-primary);
+    line-height:1.35; margin-bottom:3px; transition:color .2s;
+  }
+  .exam-card:hover .exam-name { color:#fff; }
+
+  .exam-body-row { display:flex; align-items:center; gap:6px; margin-bottom:4px; flex-wrap:wrap; }
+
+  .exam-conductor {
+    font-size:10.5px; color:var(--text-muted); font-weight:500;
+    display:flex; align-items:center; gap:4px;
+  }
+  .exam-conductor svg { width:10px; height:10px; opacity:0.5; }
+
+  .exam-desc {
+    font-size:11px; color:var(--text-secondary); font-weight:400;
+    line-height:1.5; margin-top:3px;
+  }
+
+  .exam-tag {
+    display:inline-flex; align-items:center;
+    font-size:9.5px; font-weight:600;
+    padding:2px 8px; border-radius:20px;
+    border:1px solid transparent; flex-shrink:0;
+  }
+
+  .exam-arrow {
+    width:20px; height:20px; border-radius:50%;
+    border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; margin-top:1px; color:var(--text-muted);
+    transition:background .2s,border-color .2s,transform .2s var(--ease),box-shadow .2s;
+  }
+  .exam-arrow svg { width:8px; height:8px; }
+  .exam-card:hover .exam-arrow {
+    background:var(--accent); border-color:var(--accent);
+    color:#fff; transform:translateX(2px);
+    box-shadow:0 0 10px rgba(255,45,85,0.35);
+  }
+
+  /* ── ICON COLORS ── */
+  .ic-blue   { background:var(--blue-dim);   color:var(--blue);   }
+  .ic-green  { background:var(--green-dim);  color:var(--green);  }
+  .ic-orange { background:var(--orange-dim); color:var(--orange); }
+  .ic-red    { background:var(--red-dim);    color:var(--red);    }
+  .ic-yellow { background:var(--yellow-dim); color:var(--yellow); }
+  .ic-purple { background:var(--purple-dim); color:var(--purple); }
+  .ic-teal   { background:var(--teal-dim);   color:var(--teal);   }
+  .ic-pink   { background:var(--pink-dim);   color:var(--pink);   }
+  .ic-accent { background:var(--accent-dim); color:var(--accent); }
+  .ic-sky    { background:var(--sky-dim);    color:var(--sky);    }
+  .ic-lime   { background:var(--lime-dim);   color:var(--lime);   }
+
+  /* tag variants */
+  .tag-blue   { background:var(--blue-dim);   color:var(--blue);   border-color:rgba(77,158,255,0.18); }
+  .tag-green  { background:var(--green-dim);  color:var(--green);  border-color:rgba(0,214,143,0.18); }
+  .tag-orange { background:var(--orange-dim); color:var(--orange); border-color:rgba(251,146,60,0.18); }
+  .tag-red    { background:var(--red-dim);    color:var(--red);    border-color:rgba(255,77,77,0.18); }
+  .tag-yellow { background:var(--yellow-dim); color:var(--yellow); border-color:rgba(255,184,0,0.18); }
+  .tag-purple { background:var(--purple-dim); color:var(--purple); border-color:rgba(167,139,250,0.18); }
+  .tag-teal   { background:var(--teal-dim);   color:var(--teal);   border-color:rgba(45,212,191,0.18); }
+  .tag-pink   { background:var(--pink-dim);   color:var(--pink);   border-color:rgba(244,114,182,0.18); }
+  .tag-sky    { background:var(--sky-dim);    color:var(--sky);    border-color:rgba(56,189,248,0.18); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width:1000px) { .exam-grid { grid-template-columns:1fr 1fr; } }
+  @media (max-width:860px) {
+    .page { padding:24px 20px 48px; }
+    .tab-btn { padding:13px 14px; font-size:12px; }
+    .tab-body { flex-direction:column; }
+    .cat-list {
+      width:100%; border-right:none; border-bottom:1px solid var(--border);
+      display:flex; flex-wrap:wrap; gap:5px; padding:10px; animation:none;
+      height: auto; overflow: visible;
+    }
+    .cat-group-label,.cat-count,.cat-arrow { display:none; }
+    .cat-item { border-radius:100px; padding:7px 13px; }
+    .cat-icon-wrap { display:none; }
+    .sub-panel { padding:18px; }
+    .exam-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ SVG DEFS ══ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-atom"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.55-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.55 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/></symbol>
+  <symbol id="i-steth"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></symbol>
+  <symbol id="i-institution" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="3" y1="11" x2="21" y2="11"/><polyline points="5 11 5 22"/><polyline points="19 11 19 22"/><polyline points="9 11 9 22"/><polyline points="15 11 15 22"/><polyline points="3 7 12 2 21 7"/></symbol>
+  <symbol id="i-shield"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-train"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="4"/><path d="M4 11h16M12 3v8"/><path d="m8 19-2 3m12-3 2 3"/></symbol>
+  <symbol id="i-bank"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="5 6 12 3 19 6"/><line x1="4" y1="10" x2="4" y2="21"/><line x1="8" y1="10" x2="8" y2="21"/><line x1="12" y1="10" x2="12" y2="21"/><line x1="16" y1="10" x2="16" y2="21"/><line x1="20" y1="10" x2="20" y2="21"/></symbol>
+  <symbol id="i-flag"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></symbol>
+  <symbol id="i-award"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></symbol>
+  <symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+  <symbol id="i-plane"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4s-2 1-3.5 2.5L11 8 2.8 6.2c-.5-.1-.9.2-1.1.7L1 9c0 .5.3 1 .8 1.1l7.2 1.7L5 15H3l-1 3 3-1v-2l3.5-3.5 1.7 7.2c.1.5.6.8 1.1.8l2.3-.7c.5-.2.8-.6.7-1.1z"/></symbol>
+  <symbol id="i-anchor"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></symbol>
+  <symbol id="i-gear"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-wrench"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+  <symbol id="i-coins"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></symbol>
+  <symbol id="i-heartpulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l1.5-3 2 4.5 1.5-3h6.28"/></symbol>
+  <symbol id="i-pill"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="M8.5 8.5 16 16"/></symbol>
+  <symbol id="i-microscope" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 21h18"/><path d="M14 21v-4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v4"/><path d="M14 3v4M18 3v4M14 5h4"/><path d="M10 13V7a2 2 0 0 1 2-2h4"/></symbol>
+  <symbol id="i-compass"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+  <symbol id="i-cpu"      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M15 20v2M9 2v2M9 20v2M2 15h2M2 9h2M20 15h2M20 9h2"/></symbol>
+  <symbol id="i-crosshair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></symbol>
+  <symbol id="i-users"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-zap"      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-layers"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+  <symbol id="i-chevron"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22V12h6v10M8 6h.01M16 6h.01M8 10h.01M16 10h.01"/></symbol>
+  <symbol id="i-book"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+</svg>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-label">Competitive Exams India</div>
+      <div class="page-title">Every Exam. One <span>Platform.</span></div>
+      <div class="page-sub">Complete directory of JEE, NEET, UPSC, Defence, Railways, Banking and SSB exams.</div>
+    </div>
+    <a href="index.html" class="nav-btn">
+      <svg><use href="#i-compass"/></svg>
+      Back to Explorer
+    </a>
+  </div>
+
+  <div class="card">
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active"   onclick="switchTab('jee',this)">      <svg class="tab-icon"><use href="#i-atom"/></svg>      JEE       <span class="tab-badge">9</span></button>
+      <button class="tab-btn"          onclick="switchTab('neet',this)">     <svg class="tab-icon"><use href="#i-steth"/></svg>     NEET      <span class="tab-badge">7</span></button>
+      <button class="tab-btn"          onclick="switchTab('upsc',this)">     <svg class="tab-icon"><use href="#i-institution"/></svg> UPSC   <span class="tab-badge">11</span></button>
+      <button class="tab-btn"          onclick="switchTab('defence',this)">  <svg class="tab-icon"><use href="#i-shield"/></svg>    Defence   <span class="tab-badge">20</span></button>
+      <button class="tab-btn"          onclick="switchTab('railways',this)"> <svg class="tab-icon"><use href="#i-train"/></svg>     Railways  <span class="tab-badge">12</span></button>
+      <button class="tab-btn"          onclick="switchTab('banking',this)">  <svg class="tab-icon"><use href="#i-bank"/></svg>      Banking   <span class="tab-badge">33</span></button>
+      <button class="tab-btn"          onclick="switchTab('ssb',this)">      <svg class="tab-icon"><use href="#i-flag"/></svg>      SSB       <span class="tab-badge">5</span></button>
+    </div>
+
+    <!-- ══════════ JEE ══════════ -->
+    <div class="tab-body" id="tab-jee">
+      <div class="cat-list">
+        <div class="cat-group-label">Category</div>
+        <div class="cat-item active" onclick="switchCat('jee','all',this)">
+          <div class="cat-item-left"><div class="cat-icon-wrap ic-blue"><svg><use href="#i-atom"/></svg></div><div><div class="cat-name">All JEE Exams</div><div class="cat-count">9 exams</div></div></div>
+          <span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span>
+        </div>
+        <div class="cat-item" onclick="switchCat('jee','national',this)">
+          <div class="cat-item-left"><div class="cat-icon-wrap ic-purple"><svg><use href="#i-award"/></svg></div><div><div class="cat-name">National Level</div><div class="cat-count">2 exams</div></div></div>
+          <span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span>
+        </div>
+        <div class="cat-item" onclick="switchCat('jee','private',this)">
+          <div class="cat-item-left"><div class="cat-icon-wrap ic-teal"><svg><use href="#i-building"/></svg></div><div><div class="cat-name">Private Universities</div><div class="cat-count">3 exams</div></div></div>
+          <span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span>
+        </div>
+        <div class="cat-item" onclick="switchCat('jee','state',this)">
+          <div class="cat-item-left"><div class="cat-icon-wrap ic-orange"><svg><use href="#i-layers"/></svg></div><div><div class="cat-name">State Level</div><div class="cat-count">4 exams</div></div></div>
+          <span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span>
+        </div>
+      </div>
+      <div class="sub-panel active" id="jee-all">
+        <div class="panel-header"><div class="panel-icon ic-blue"><svg><use href="#i-atom"/></svg></div><div><div class="panel-title">JEE — Engineering Entrance Exams</div><div class="panel-desc">National & state-level engineering admissions across India</div></div><div class="panel-count">9 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">JEE Main</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>National Testing Agency (NTA)</span><span class="exam-tag tag-blue">National</span></div><div class="exam-desc">B.Tech/B.E. admissions to NITs, IIITs, CFTIs</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">JEE Advanced</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>IIT (Jointly)</span><span class="exam-tag tag-purple">Premium</span></div><div class="exam-desc">Admission to IITs — B.Tech, BS, Integrated courses</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">BITSAT</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>BITS Pilani</span><span class="exam-tag tag-teal">Private</span></div><div class="exam-desc">Admission to BITS Pilani campuses nationwide</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">VITEEE</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>VIT University</span><span class="exam-tag tag-teal">Private</span></div><div class="exam-desc">Admission to VIT engineering programs</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">SRMJEEE</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>SRM University</span><span class="exam-tag tag-teal">Private</span></div><div class="exam-desc">Admission to SRM engineering programs</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">06</div><div class="exam-body"><div class="exam-name">MHT CET (Engg)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Maharashtra State CET Cell</span><span class="exam-tag tag-orange">State</span></div><div class="exam-desc">Engineering admissions in Maharashtra</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">07</div><div class="exam-body"><div class="exam-name">KCET</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Karnataka Examinations Authority</span><span class="exam-tag tag-orange">State</span></div><div class="exam-desc">Engineering admissions in Karnataka</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">08</div><div class="exam-body"><div class="exam-name">COMEDK UGET</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>COMEDK</span><span class="exam-tag tag-orange">State</span></div><div class="exam-desc">Engineering admissions in Karnataka private colleges</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">09</div><div class="exam-body"><div class="exam-name">WBJEE</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>West Bengal JEEB</span><span class="exam-tag tag-orange">State</span></div><div class="exam-desc">Engineering admissions in West Bengal</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="jee-national">
+        <div class="panel-header"><div class="panel-icon ic-purple"><svg><use href="#i-award"/></svg></div><div><div class="panel-title">National Level — JEE</div><div class="panel-desc">Top national engineering entrance exams</div></div><div class="panel-count">2 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">JEE Main</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NTA</span><span class="exam-tag tag-blue">National</span></div><div class="exam-desc">B.Tech/B.E. admissions to NITs, IIITs, CFTIs</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">JEE Advanced</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>IIT (Jointly)</span><span class="exam-tag tag-purple">Premium</span></div><div class="exam-desc">Admission to IITs — B.Tech, BS, Integrated courses</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="jee-private">
+        <div class="panel-header"><div class="panel-icon ic-teal"><svg><use href="#i-building"/></svg></div><div><div class="panel-title">Private University Exams</div><div class="panel-desc">Top private engineering universities</div></div><div class="panel-count">3 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">BITSAT</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>BITS Pilani</span><span class="exam-tag tag-teal">Private</span></div><div class="exam-desc">Admission to BITS Pilani campuses nationwide</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">VITEEE</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>VIT University</span><span class="exam-tag tag-teal">Private</span></div><div class="exam-desc">Admission to VIT engineering programs</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">SRMJEEE</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>SRM University</span><span class="exam-tag tag-teal">Private</span></div><div class="exam-desc">Admission to SRM engineering programs</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="jee-state">
+        <div class="panel-header"><div class="panel-icon ic-orange"><svg><use href="#i-layers"/></svg></div><div><div class="panel-title">State Level — JEE</div><div class="panel-desc">State-specific engineering entrance exams</div></div><div class="panel-count">4 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">MHT CET (Engg)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Maharashtra State CET Cell</span><span class="exam-tag tag-orange">Maharashtra</span></div><div class="exam-desc">Engineering admissions in Maharashtra</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">KCET</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Karnataka Examinations Authority</span><span class="exam-tag tag-orange">Karnataka</span></div><div class="exam-desc">Engineering admissions in Karnataka</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">COMEDK UGET</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>COMEDK</span><span class="exam-tag tag-orange">Karnataka</span></div><div class="exam-desc">Engineering admissions in Karnataka private colleges</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">WBJEE</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>West Bengal JEEB</span><span class="exam-tag tag-orange">West Bengal</span></div><div class="exam-desc">Engineering admissions in West Bengal</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ NEET ══════════ -->
+    <div class="tab-body" id="tab-neet" style="display:none">
+      <div class="cat-list">
+        <div class="cat-group-label">Category</div>
+        <div class="cat-item active" onclick="switchCat('neet','all',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-green"><svg><use href="#i-steth"/></svg></div><div><div class="cat-name">All NEET Exams</div><div class="cat-count">7 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('neet','ug',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-teal"><svg><use href="#i-heartpulse"/></svg></div><div><div class="cat-name">Undergraduate</div><div class="cat-count">1 exam</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('neet','pg',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-purple"><svg><use href="#i-microscope"/></svg></div><div><div class="cat-name">Postgraduate</div><div class="cat-count">6 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+      </div>
+      <div class="sub-panel active" id="neet-all">
+        <div class="panel-header"><div class="panel-icon ic-green"><svg><use href="#i-steth"/></svg></div><div><div class="panel-title">NEET — Medical Entrance Exams</div><div class="panel-desc">MBBS, BDS, PG and super-speciality medical admissions</div></div><div class="panel-count">7 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">NEET UG</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NTA</span><span class="exam-tag tag-green">UG</span></div><div class="exam-desc">MBBS/BDS/AYUSH undergraduate admissions</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">NEET PG</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NBE</span><span class="exam-tag tag-teal">PG</span></div><div class="exam-desc">MD/MS/Diploma postgraduate medical admissions</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">NEET SS</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NBE</span><span class="exam-tag tag-purple">Super Speciality</span></div><div class="exam-desc">Super-specialty medical admissions (DM/MCh)</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">AIIMS PG</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>AIIMS New Delhi</span><span class="exam-tag tag-teal">PG</span></div><div class="exam-desc">PG admissions to AIIMS institutes</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">JIPMER PG</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>JIPMER Puducherry</span><span class="exam-tag tag-teal">PG</span></div><div class="exam-desc">PG admissions at JIPMER Puducherry</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">06</div><div class="exam-body"><div class="exam-name">FMGE / MCI Screening</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NBE</span><span class="exam-tag tag-orange">Screening</span></div><div class="exam-desc">Screening test for foreign medical graduates</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">07</div><div class="exam-body"><div class="exam-name">INI CET</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>AIIMS New Delhi</span><span class="exam-tag tag-purple">Centralized</span></div><div class="exam-desc">PG entrance for AIIMS/PGI/JIPMER/NIMHANS</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="neet-ug">
+        <div class="panel-header"><div class="panel-icon ic-teal"><svg><use href="#i-heartpulse"/></svg></div><div><div class="panel-title">Undergraduate Medical</div><div class="panel-desc">MBBS/BDS/AYUSH undergraduate admissions</div></div><div class="panel-count">1 exam</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">NEET UG</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NTA</span><span class="exam-tag tag-green">UG · National</span></div><div class="exam-desc">MBBS/BDS/AYUSH undergraduate admissions — the most competitive medical exam</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="neet-pg">
+        <div class="panel-header"><div class="panel-icon ic-purple"><svg><use href="#i-microscope"/></svg></div><div><div class="panel-title">Postgraduate Medical</div><div class="panel-desc">MD, MS, DM, MCh and PG speciality admissions</div></div><div class="panel-count">6 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">NEET PG</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NBE</span><span class="exam-tag tag-teal">PG</span></div><div class="exam-desc">MD/MS/Diploma postgraduate medical admissions</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">NEET SS</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NBE</span><span class="exam-tag tag-purple">Super Speciality</span></div><div class="exam-desc">Super-specialty medical admissions (DM/MCh)</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">AIIMS PG</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>AIIMS</span><span class="exam-tag tag-teal">PG</span></div><div class="exam-desc">PG admissions to AIIMS institutes</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">JIPMER PG</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>JIPMER</span><span class="exam-tag tag-teal">PG</span></div><div class="exam-desc">PG admissions at JIPMER Puducherry</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">FMGE / MCI Screening</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NBE</span><span class="exam-tag tag-orange">Screening</span></div><div class="exam-desc">Screening test for foreign medical graduates</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">06</div><div class="exam-body"><div class="exam-name">INI CET</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>AIIMS New Delhi</span><span class="exam-tag tag-purple">Centralized</span></div><div class="exam-desc">PG entrance for AIIMS/PGI/JIPMER/NIMHANS</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ UPSC ══════════ -->
+    <div class="tab-body" id="tab-upsc" style="display:none">
+      <div class="cat-list">
+        <div class="cat-group-label">Category</div>
+        <div class="cat-item active" onclick="switchCat('upsc','all',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-orange"><svg><use href="#i-institution"/></svg></div><div><div class="cat-name">All UPSC Exams</div><div class="cat-count">11 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('upsc','civil',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-yellow"><svg><use href="#i-award"/></svg></div><div><div class="cat-name">Civil Services</div><div class="cat-count">3 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('upsc','finance',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-green"><svg><use href="#i-coins"/></svg></div><div><div class="cat-name">Finance & Economy</div><div class="cat-count">5 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('upsc','technical',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-blue"><svg><use href="#i-gear"/></svg></div><div><div class="cat-name">Technical / Medical</div><div class="cat-count">3 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+      </div>
+      <div class="sub-panel active" id="upsc-all">
+        <div class="panel-header"><div class="panel-icon ic-orange"><svg><use href="#i-institution"/></svg></div><div><div class="panel-title">UPSC — Union Public Service Commission</div><div class="panel-desc">India's premier central recruitment authority for Group A & B services</div></div><div class="panel-count">11 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">UPSC IAS / Civil Services</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-yellow">Group A</span></div><div class="exam-desc">IAS, IPS, IFS and other Group A & B services</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">UPSC CDS</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-red">Defence</span></div><div class="exam-desc">Officers in Indian Military, Naval & Air Force Academies</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">CAPF AC</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-red">Paramilitary</span></div><div class="exam-desc">Assistant Commandant in BSF, CRPF, ITBP, CISF, SSB</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">UPSC EPFO</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-green">Finance</span></div><div class="exam-desc">Enforcement Officer/Accounts Officer in EPFO</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">EPFO Assistant</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-green">Finance</span></div><div class="exam-desc">Assistant in Employees' Provident Fund Organisation</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">06</div><div class="exam-body"><div class="exam-name">IFOS (Indian Forest Service)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-orange">Environment</span></div><div class="exam-desc">Indian Forest Service officers</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">07</div><div class="exam-body"><div class="exam-name">ISS (Indian Statistical Service)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-purple">Statistical</span></div><div class="exam-desc">Statistical services officers</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">08</div><div class="exam-body"><div class="exam-name">UPSC APFC</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-green">Finance</span></div><div class="exam-desc">Assistant Provident Fund Commissioner</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">09</div><div class="exam-body"><div class="exam-name">UPSC CMS</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-teal">Medical</span></div><div class="exam-desc">Combined Medical Services Examination</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">10</div><div class="exam-body"><div class="exam-name">UPSC SO/Steno</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-blue">Clerical</span></div><div class="exam-desc">Section Officer & Stenographer posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">11</div><div class="exam-body"><div class="exam-name">NDA (via UPSC)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-red">Defence</span></div><div class="exam-desc">National Defence Academy & Naval Academy</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="upsc-civil">
+        <div class="panel-header"><div class="panel-icon ic-yellow"><svg><use href="#i-award"/></svg></div><div><div class="panel-title">Civil Services</div><div class="panel-desc">IAS, IPS, IFS and allied civil service exams</div></div><div class="panel-count">3 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">UPSC IAS / Civil Services</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-yellow">Group A</span></div><div class="exam-desc">IAS, IPS, IFS and other Group A & B services</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">IFOS (Indian Forest Service)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-orange">Environment</span></div><div class="exam-desc">Indian Forest Service officers</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">UPSC SO/Steno</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-blue">Group B</span></div><div class="exam-desc">Section Officer & Stenographer posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="upsc-finance">
+        <div class="panel-header"><div class="panel-icon ic-green"><svg><use href="#i-coins"/></svg></div><div><div class="panel-title">Finance & Economy</div><div class="panel-desc">EPFO, APFC and statistical service posts</div></div><div class="panel-count">5 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">UPSC EPFO</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-green">Finance</span></div><div class="exam-desc">Enforcement Officer/Accounts Officer in EPFO</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">EPFO Assistant</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-green">Finance</span></div><div class="exam-desc">Assistant in Employees' Provident Fund Organisation</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">UPSC APFC</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-green">Finance</span></div><div class="exam-desc">Assistant Provident Fund Commissioner</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">ISS (Indian Statistical Service)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-purple">Statistical</span></div><div class="exam-desc">Statistical services officers</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">CAPF AC</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-red">Paramilitary</span></div><div class="exam-desc">Assistant Commandant in BSF, CRPF, ITBP, CISF, SSB</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="upsc-technical">
+        <div class="panel-header"><div class="panel-icon ic-blue"><svg><use href="#i-gear"/></svg></div><div><div class="panel-title">Technical / Medical</div><div class="panel-desc">Engineering and medical services via UPSC</div></div><div class="panel-count">3 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">UPSC CMS</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-teal">Medical</span></div><div class="exam-desc">Combined Medical Services Examination</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">UPSC CDS</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-red">Defence</span></div><div class="exam-desc">Officers in Indian Military, Naval & Air Force Academies</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">NDA (via UPSC)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-red">Defence</span></div><div class="exam-desc">National Defence Academy & Naval Academy</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ DEFENCE ══════════ -->
+    <div class="tab-body" id="tab-defence" style="display:none">
+      <div class="cat-list">
+        <div class="cat-group-label">Category</div>
+        <div class="cat-item active" onclick="switchCat('defence','all',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-red"><svg><use href="#i-shield"/></svg></div><div><div class="cat-name">All Defence</div><div class="cat-count">20 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('defence','officers',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-yellow"><svg><use href="#i-award"/></svg></div><div><div class="cat-name">Officer Entry</div><div class="cat-count">5 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('defence','soldiers',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-orange"><svg><use href="#i-users"/></svg></div><div><div class="cat-name">Soldier / Airmen</div><div class="cat-count">5 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('defence','paramilitary',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-pink"><svg><use href="#i-crosshair"/></svg></div><div><div class="cat-name">Paramilitary</div><div class="cat-count">4 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('defence','drdo',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-cpu"><svg><use href="#i-cpu"/></svg></div><div><div class="cat-name">DRDO / BARC</div><div class="cat-count">4 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('defence','misc',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-teal"><svg><use href="#i-layers"/></svg></div><div><div class="cat-name">Misc / Sainik</div><div class="cat-count">2 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+      </div>
+      <div class="sub-panel active" id="defence-all">
+        <div class="panel-header"><div class="panel-icon ic-red"><svg><use href="#i-shield"/></svg></div><div><div class="panel-title">Defence — Indian Armed Forces & Paramilitary</div><div class="panel-desc">Army, Navy, Air Force, DRDO, BARC and paramilitary recruitment</div></div><div class="panel-count">20 exams</div></div>
+        <div class="exam-grid" id="defence-all-grid"></div>
+      </div>
+      <div class="sub-panel" id="defence-officers">
+        <div class="panel-header"><div class="panel-icon ic-yellow"><svg><use href="#i-award"/></svg></div><div><div class="panel-title">Officer Entry — Armed Forces</div><div class="panel-desc">Commission as an officer in Army, Navy or Air Force</div></div><div class="panel-count">5 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">NDA</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-red">10+2 Level</span></div><div class="exam-desc">National Defence Academy – Army, Navy, Air Force</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">CDS</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC</span><span class="exam-tag tag-red">Graduate</span></div><div class="exam-desc">Officers in IMA, INA, AFA, OTA</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">AFCAT</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Indian Air Force</span><span class="exam-tag tag-sky">Air Force</span></div><div class="exam-desc">Air Force Common Admission Test – Flying/Ground/Technical</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">INET</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Indian Navy</span><span class="exam-tag tag-blue">Navy</span></div><div class="exam-desc">Officers & Sailors in Indian Navy</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">Territorial Army</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Ministry of Defence</span><span class="exam-tag tag-orange">Part-time</span></div><div class="exam-desc">Part-time soldier entry – Officers & Soldiers</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="defence-soldiers">
+        <div class="panel-header"><div class="panel-icon ic-orange"><svg><use href="#i-users"/></svg></div><div><div class="panel-title">Soldier / Airmen Recruitment</div><div class="panel-desc">Agniveer and direct enrollment exams</div></div><div class="panel-count">5 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">IAF Airmen (CASB)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Indian Air Force</span><span class="exam-tag tag-sky">Group X & Y</span></div><div class="exam-desc">Group X & Y Airmen recruitment</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">Indian Coast Guard</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Ministry of Defence</span><span class="exam-tag tag-teal">Maritime</span></div><div class="exam-desc">Navik (General/DB), Yantrik & Officer Entry</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">Agniveer Army</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Indian Army</span><span class="exam-tag tag-red">Agnipath</span></div><div class="exam-desc">Short-service soldier recruitment (Agnipath Scheme)</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">Agniveer Navy</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Indian Navy</span><span class="exam-tag tag-blue">Agnipath</span></div><div class="exam-desc">Short-service sailor recruitment (Agnipath Scheme)</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">Agniveer Air Force</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Indian Air Force</span><span class="exam-tag tag-sky">Agnipath</span></div><div class="exam-desc">Short-service airmen recruitment (Agnipath Scheme)</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="defence-paramilitary">
+        <div class="panel-header"><div class="panel-icon ic-pink"><svg><use href="#i-crosshair"/></svg></div><div><div class="panel-title">Paramilitary Forces</div><div class="panel-desc">BSF, CRPF, CAPF and allied paramilitary forces</div></div><div class="panel-count">4 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">MES (Military Engineer Services)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>MES</span><span class="exam-tag tag-blue">Technical</span></div><div class="exam-desc">Civilian & technical posts in MES</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">BSF Recruitment</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>BSF</span><span class="exam-tag tag-red">Paramilitary</span></div><div class="exam-desc">Constable, HC, ASI & officer-level in BSF</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">CRPF Constable</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>CRPF</span><span class="exam-tag tag-red">Paramilitary</span></div><div class="exam-desc">Constable (GD/Technical/Tradesman) in CRPF</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">CAPF (via SSC)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>SSC / MHA</span><span class="exam-tag tag-red">CPO / SI</span></div><div class="exam-desc">CPO/SI in CRPF, BSF, CISF, ITBP, SSB</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="defence-drdo">
+        <div class="panel-header"><div class="panel-icon ic-blue"><svg><use href="#i-cpu"/></svg></div><div><div class="panel-title">DRDO / BARC</div><div class="panel-desc">Scientific, technical and research positions</div></div><div class="panel-count">4 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">DRDO (CEPTAM)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>DRDO</span><span class="exam-tag tag-blue">Technical</span></div><div class="exam-desc">Technical & scientific posts in DRDO labs</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">DRDO MTS</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>DRDO</span><span class="exam-tag tag-blue">Support</span></div><div class="exam-desc">Multi-Tasking Staff in DRDO</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">DRDO Technician A</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>DRDO</span><span class="exam-tag tag-blue">Technician</span></div><div class="exam-desc">Technician posts in DRDO</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">BARC</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Bhabha Atomic Research Centre</span><span class="exam-tag tag-purple">Research</span></div><div class="exam-desc">Scientific & technical positions at BARC</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="defence-misc">
+        <div class="panel-header"><div class="panel-icon ic-teal"><svg><use href="#i-layers"/></svg></div><div><div class="panel-title">Assam Rifles & Sainik School</div><div class="panel-desc">Miscellaneous defence recruitment and admissions</div></div><div class="panel-count">2 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">Assam Rifles</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Ministry of Home Affairs</span><span class="exam-tag tag-orange">Paramilitary</span></div><div class="exam-desc">Riflemen and officer-level posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">Sainik School (AISSEE)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NTA</span><span class="exam-tag tag-teal">School</span></div><div class="exam-desc">Class 6 & 9 admissions to Sainik Schools</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ RAILWAYS ══════════ -->
+    <div class="tab-body" id="tab-railways" style="display:none">
+      <div class="cat-list">
+        <div class="cat-group-label">Category</div>
+        <div class="cat-item active" onclick="switchCat('railways','all',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-yellow"><svg><use href="#i-train"/></svg></div><div><div class="cat-name">All Railways</div><div class="cat-count">12 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('railways','ntpc',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-blue"><svg><use href="#i-briefcase"/></svg></div><div><div class="cat-name">NTPC & Admin</div><div class="cat-count">4 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('railways','technical',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-orange"><svg><use href="#i-wrench"/></svg></div><div><div class="cat-name">Technical Posts</div><div class="cat-count">5 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('railways','security',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-red"><svg><use href="#i-shield"/></svg></div><div><div class="cat-name">Security & Other</div><div class="cat-count">3 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+      </div>
+      <div class="sub-panel active" id="railways-all">
+        <div class="panel-header"><div class="panel-icon ic-yellow"><svg><use href="#i-train"/></svg></div><div><div class="panel-title">Railways — Railway Recruitment Boards</div><div class="panel-desc">Central government railway sector recruitment across all grades</div></div><div class="panel-count">12 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">RRB NTPC (Graduate)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Boards</span><span class="exam-tag tag-yellow">Graduate</span></div><div class="exam-desc">Station Master, Goods Guard, Jr. Account Assistant etc.</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">RRB NTPC (Undergraduate)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Boards</span><span class="exam-tag tag-yellow">10+2</span></div><div class="exam-desc">Jr. Clerk cum Typist, Accounts Clerk, Comm. Ticket Clerk</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">RRB Group D (Level-1)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Cell</span><span class="exam-tag tag-orange">Level 1</span></div><div class="exam-desc">Track Maintainer, Pointsman, Assistant Bridge, Helper etc.</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">RRB ALP (Assistant Loco Pilot)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Boards</span><span class="exam-tag tag-blue">Technical</span></div><div class="exam-desc">Assistant Loco Pilot & Technician posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">RRB JE (Junior Engineer)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Boards</span><span class="exam-tag tag-blue">Engineering</span></div><div class="exam-desc">JE, DMS, CMA posts in various departments</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">06</div><div class="exam-body"><div class="exam-name">RRB Technician</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Boards</span><span class="exam-tag tag-blue">Grade III</span></div><div class="exam-desc">Technician Grade-III posts in railways</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">07</div><div class="exam-body"><div class="exam-name">RRB Section Controller</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Boards</span><span class="exam-tag tag-yellow">Operations</span></div><div class="exam-desc">Section Controller / Train Controller</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">08</div><div class="exam-body"><div class="exam-name">RRB Senior Commercial cum Ticket Clerk</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Boards</span><span class="exam-tag tag-yellow">Commercial</span></div><div class="exam-desc">Commercial & ticketing posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">09</div><div class="exam-body"><div class="exam-name">RPF Constable / SI</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Protection Force</span><span class="exam-tag tag-red">Security</span></div><div class="exam-desc">Security force for railway property & passengers</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">10</div><div class="exam-body"><div class="exam-name">RRB Ministerial & Isolated Categories</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Boards</span><span class="exam-tag tag-purple">Ministerial</span></div><div class="exam-desc">Law, Steno, PGT/TGT Teachers, Publicity Inspector</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">11</div><div class="exam-body"><div class="exam-name">RRB Paramedical</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Recruitment Boards</span><span class="exam-tag tag-teal">Medical</span></div><div class="exam-desc">Staff Nurse, Pharmacist, Lab Asst., Health & Malaria Inspector</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">12</div><div class="exam-body"><div class="exam-name">DFCCIL</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Dedicated Freight Corridor Corp.</span><span class="exam-tag tag-orange">Logistics</span></div><div class="exam-desc">Executives, Multi-Tasking Staff in DFCCIL</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="railways-ntpc">
+        <div class="panel-header"><div class="panel-icon ic-blue"><svg><use href="#i-briefcase"/></svg></div><div><div class="panel-title">NTPC & Administrative Posts</div><div class="panel-desc">Non-technical, clerk, commercial and controller roles</div></div><div class="panel-count">4 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">RRB NTPC (Graduate)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRBs</span><span class="exam-tag tag-yellow">Graduate</span></div><div class="exam-desc">Station Master, Goods Guard, Jr. Account Assistant etc.</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">RRB NTPC (Undergraduate)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRBs</span><span class="exam-tag tag-yellow">10+2</span></div><div class="exam-desc">Jr. Clerk cum Typist, Accounts Clerk, Comm. Ticket Clerk</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">RRB Section Controller</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRBs</span><span class="exam-tag tag-yellow">Operations</span></div><div class="exam-desc">Section Controller / Train Controller</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">RRB Senior Commercial cum Ticket Clerk</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRBs</span><span class="exam-tag tag-yellow">Commercial</span></div><div class="exam-desc">Commercial & ticketing posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="railways-technical">
+        <div class="panel-header"><div class="panel-icon ic-orange"><svg><use href="#i-wrench"/></svg></div><div><div class="panel-title">Technical Posts</div><div class="panel-desc">ALP, JE, Group D, Technician and Paramedical</div></div><div class="panel-count">5 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">RRB Group D (Level-1)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRC</span><span class="exam-tag tag-orange">Level 1</span></div><div class="exam-desc">Track Maintainer, Pointsman, Helper etc.</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">RRB ALP</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRBs</span><span class="exam-tag tag-blue">Technical</span></div><div class="exam-desc">Assistant Loco Pilot & Technician posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">RRB JE</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRBs</span><span class="exam-tag tag-blue">Engineering</span></div><div class="exam-desc">JE, DMS, CMA posts in various departments</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">RRB Technician</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRBs</span><span class="exam-tag tag-blue">Grade III</span></div><div class="exam-desc">Technician Grade-III posts in railways</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">RRB Paramedical</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRBs</span><span class="exam-tag tag-teal">Medical</span></div><div class="exam-desc">Staff Nurse, Pharmacist, Lab Asst., Health Inspector</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="railways-security">
+        <div class="panel-header"><div class="panel-icon ic-red"><svg><use href="#i-shield"/></svg></div><div><div class="panel-title">Security, Ministerial & Freight</div><div class="panel-desc">RPF, ministerial posts and DFCCIL</div></div><div class="panel-count">3 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">RPF Constable / SI</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Railway Protection Force</span><span class="exam-tag tag-red">Security</span></div><div class="exam-desc">Security force for railway property & passengers</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">RRB Ministerial & Isolated Categories</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>RRBs</span><span class="exam-tag tag-purple">Ministerial</span></div><div class="exam-desc">Law, Steno, PGT/TGT Teachers, Publicity Inspector</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">DFCCIL</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Dedicated Freight Corridor Corp.</span><span class="exam-tag tag-orange">Logistics</span></div><div class="exam-desc">Executives, Multi-Tasking Staff in DFCCIL</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ BANKING ══════════ -->
+    <div class="tab-body" id="tab-banking" style="display:none">
+      <div class="cat-list">
+        <div class="cat-group-label">Category</div>
+        <div class="cat-item active" onclick="switchCat('banking','all',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-green"><svg><use href="#i-bank"/></svg></div><div><div class="cat-name">All Banking</div><div class="cat-count">33 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('banking','sbi',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-blue"><svg><use href="#i-briefcase"/></svg></div><div><div class="cat-name">SBI</div><div class="cat-count">4 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('banking','ibps',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-teal"><svg><use href="#i-bank"/></svg></div><div><div class="cat-name">IBPS</div><div class="cat-count">5 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('banking','rbi',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-orange"><svg><use href="#i-coins"/></svg></div><div><div class="cat-name">RBI / NABARD / SEBI</div><div class="cat-count">5 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('banking','other',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-purple"><svg><use href="#i-layers"/></svg></div><div><div class="cat-name">Other Banks & Certs</div><div class="cat-count">19 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+      </div>
+      <div class="sub-panel active" id="banking-all">
+        <div class="panel-header"><div class="panel-icon ic-green"><svg><use href="#i-bank"/></svg></div><div><div class="panel-title">Banking — Public & Private Sector Exams</div><div class="panel-desc">SBI, IBPS, RBI, NABARD, SEBI and over 20 bank-specific exams</div></div><div class="panel-count">33 exams</div></div>
+        <div class="exam-grid" id="banking-all-grid"></div>
+      </div>
+      <div class="sub-panel" id="banking-sbi">
+        <div class="panel-header"><div class="panel-icon ic-blue"><svg><use href="#i-briefcase"/></svg></div><div><div class="panel-title">SBI — State Bank of India</div><div class="panel-desc">India's largest public sector bank</div></div><div class="panel-count">4 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">SBI PO</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>State Bank of India</span><span class="exam-tag tag-blue">PO</span></div><div class="exam-desc">Probationary Officer in SBI</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">SBI Clerk</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>State Bank of India</span><span class="exam-tag tag-blue">Clerk</span></div><div class="exam-desc">Junior Associate (Customer Support & Sales) in SBI</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">SBI CBO</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>State Bank of India</span><span class="exam-tag tag-blue">Officer</span></div><div class="exam-desc">Circle Based Officer posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">SBI Apprentice</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>State Bank of India</span><span class="exam-tag tag-sky">Apprentice</span></div><div class="exam-desc">Apprentice under National Apprenticeship Promotion Scheme</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="banking-ibps">
+        <div class="panel-header"><div class="panel-icon ic-teal"><svg><use href="#i-bank"/></svg></div><div><div class="panel-title">IBPS — Institute of Banking Personnel Selection</div><div class="panel-desc">Common recruitment for nationalized and rural banks</div></div><div class="panel-count">5 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">IBPS PO</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>IBPS</span><span class="exam-tag tag-teal">PO</span></div><div class="exam-desc">Probationary Officer in nationalized banks</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">IBPS Clerk</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>IBPS</span><span class="exam-tag tag-teal">Clerk</span></div><div class="exam-desc">Clerical cadre in participating nationalized banks</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">IBPS SO</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>IBPS</span><span class="exam-tag tag-teal">Specialist</span></div><div class="exam-desc">IT, Agriculture, HR, Law, Marketing specialist roles</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">IBPS RRB Officer Scale I/II/III</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>IBPS</span><span class="exam-tag tag-green">RRB Officer</span></div><div class="exam-desc">Officers in Regional Rural Banks</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">IBPS RRB Office Assistant</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>IBPS</span><span class="exam-tag tag-green">RRB Clerk</span></div><div class="exam-desc">Multipurpose staff in Regional Rural Banks</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="banking-rbi">
+        <div class="panel-header"><div class="panel-icon ic-orange"><svg><use href="#i-coins"/></svg></div><div><div class="panel-title">RBI / NABARD / SEBI</div><div class="panel-desc">Reserve Bank, development and securities market regulators</div></div><div class="panel-count">5 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">RBI Grade B</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Reserve Bank of India</span><span class="exam-tag tag-orange">Grade B</span></div><div class="exam-desc">Grade B General/DEPR/DSIM officers in RBI</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">RBI Assistant</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Reserve Bank of India</span><span class="exam-tag tag-orange">Assistant</span></div><div class="exam-desc">Assistant cadre in RBI</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">RBI Security Guard</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Reserve Bank of India</span><span class="exam-tag tag-red">Security</span></div><div class="exam-desc">Security Guard posts in RBI</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">NABARD Grade A/B</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>NABARD</span><span class="exam-tag tag-green">Development</span></div><div class="exam-desc">Development Assistant & Officers in NABARD</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">SEBI Grade A</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>SEBI</span><span class="exam-tag tag-purple">Securities</span></div><div class="exam-desc">Officers in Securities & Exchange Board of India</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="banking-other">
+        <div class="panel-header"><div class="panel-icon ic-purple"><svg><use href="#i-layers"/></svg></div><div><div class="panel-title">Other Banks, PSUs & Certifications</div><div class="panel-desc">IDBI, ECGC, IPPB, regional banks and banking certifications</div></div><div class="panel-count">19 exams</div></div>
+        <div class="exam-grid" id="banking-other-grid"></div>
+      </div>
+    </div>
+
+    <!-- ══════════ SSB ══════════ -->
+    <div class="tab-body" id="tab-ssb" style="display:none">
+      <div class="cat-list">
+        <div class="cat-group-label">Category</div>
+        <div class="cat-item active" onclick="switchCat('ssb','all',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-accent"><svg><use href="#i-flag"/></svg></div><div><div class="cat-name">All SSB</div><div class="cat-count">5 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('ssb','paramilitary',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-red"><svg><use href="#i-shield"/></svg></div><div><div class="cat-name">Paramilitary Roles</div><div class="cat-count">4 exams</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+        <div class="cat-item" onclick="switchCat('ssb','interview',this)"><div class="cat-item-left"><div class="cat-icon-wrap ic-yellow"><svg><use href="#i-users"/></svg></div><div><div class="cat-name">SSB Interview</div><div class="cat-count">1 exam</div></div></div><span class="cat-arrow"><svg width="11" height="11"><use href="#i-chevron"/></svg></span></div>
+      </div>
+      <div class="sub-panel active" id="ssb-all">
+        <div class="panel-header"><div class="panel-icon ic-accent"><svg><use href="#i-flag"/></svg></div><div><div class="panel-title">SSB — Sashastra Seema Bal & Selection Board</div><div class="panel-desc">Paramilitary border force and armed forces selection processes</div></div><div class="panel-count">5 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">SSB (Sashastra Seema Bal)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Ministry of Home Affairs</span><span class="exam-tag tag-red">Paramilitary</span></div><div class="exam-desc">Constable, HC, ASI, Inspector & officer posts in SSB</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">SSB Head Constable</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Sashastra Seema Bal</span><span class="exam-tag tag-red">HC</span></div><div class="exam-desc">Head Constable (Ministerial) posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">SSB Interview (Services Selection Board)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Indian Armed Forces</span><span class="exam-tag tag-yellow">Interview</span></div><div class="exam-desc">Selection Board interview for NDA/CDS/AFCAT/TA candidates</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">SSB Sub-Inspector</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Sashastra Seema Bal</span><span class="exam-tag tag-red">SI</span></div><div class="exam-desc">Sub-Inspector level posts in SSB (paramilitary)</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">05</div><div class="exam-body"><div class="exam-name">CAPF (SSB quota)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC / MHA</span><span class="exam-tag tag-orange">AC via CAPF</span></div><div class="exam-desc">Assistant Commandant in Sashastra Seema Bal via CAPF exam</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="ssb-paramilitary">
+        <div class="panel-header"><div class="panel-icon ic-red"><svg><use href="#i-shield"/></svg></div><div><div class="panel-title">Paramilitary Roles — SSB</div><div class="panel-desc">Direct recruitment in Sashastra Seema Bal</div></div><div class="panel-count">4 exams</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">SSB (Sashastra Seema Bal)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>MHA</span><span class="exam-tag tag-red">Paramilitary</span></div><div class="exam-desc">Constable, HC, ASI, Inspector & officer posts in SSB</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">02</div><div class="exam-body"><div class="exam-name">SSB Head Constable</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Sashastra Seema Bal</span><span class="exam-tag tag-red">HC</span></div><div class="exam-desc">Head Constable (Ministerial) posts</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">03</div><div class="exam-body"><div class="exam-name">SSB Sub-Inspector</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Sashastra Seema Bal</span><span class="exam-tag tag-red">SI</span></div><div class="exam-desc">Sub-Inspector level posts in SSB</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+          <a class="exam-card" href="#"><div class="exam-num">04</div><div class="exam-body"><div class="exam-name">CAPF (SSB quota)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>UPSC / MHA</span><span class="exam-tag tag-orange">AC via CAPF</span></div><div class="exam-desc">Assistant Commandant in SSB via CAPF exam</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+      <div class="sub-panel" id="ssb-interview">
+        <div class="panel-header"><div class="panel-icon ic-yellow"><svg><use href="#i-users"/></svg></div><div><div class="panel-title">SSB Interview — Services Selection Board</div><div class="panel-desc">Psychological & officer-like quality assessment for armed forces</div></div><div class="panel-count">1 exam</div></div>
+        <div class="exam-grid">
+          <a class="exam-card" href="#"><div class="exam-num">01</div><div class="exam-body"><div class="exam-name">SSB Interview (Services Selection Board)</div><div class="exam-body-row"><span class="exam-conductor"><svg><use href="#i-building"/></svg>Indian Armed Forces</span><span class="exam-tag tag-yellow">5-Day Process</span></div><div class="exam-desc">Selection Board interview for NDA/CDS/AFCAT/TA candidates — psychological, intelligence and group tasks</div></div><div class="exam-arrow"><svg><use href="#i-chevron"/></svg></div></a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /page -->
+
+<script>
+// Dynamically build large grids to keep HTML clean
+const defenceAllData = [
+  ["NDA","UPSC","10+2 Level","Army, Navy, Air Force – National Defence Academy"],
+  ["CDS (Combined Defence Services)","UPSC","Graduate","Officers in IMA, INA, AFA, OTA"],
+  ["AFCAT","Indian Air Force","Air Force","Flying/Ground/Technical officer entry"],
+  ["IAF Airmen (CASB)","Indian Air Force","Group X & Y","Airmen recruitment"],
+  ["INET","Indian Navy","Navy","Officers & Sailors in Indian Navy"],
+  ["Indian Coast Guard","Ministry of Defence","Maritime","Navik, Yantrik & Officer Entry"],
+  ["MES (Military Engineer Services)","MES","Technical","Civilian & technical posts in MES"],
+  ["Agniveer Army","Indian Army","Agnipath","Short-service soldier – Agnipath Scheme"],
+  ["Agniveer Navy","Indian Navy","Agnipath","Short-service sailor – Agnipath Scheme"],
+  ["Agniveer Air Force","Indian Air Force","Agnipath","Short-service airmen – Agnipath Scheme"],
+  ["Territorial Army","Ministry of Defence","Part-time","Part-time soldier entry – Officers & Soldiers"],
+  ["DRDO (CEPTAM)","DRDO","Technical","Technical & scientific posts in DRDO labs"],
+  ["DRDO MTS","DRDO","Support","Multi-Tasking Staff in DRDO"],
+  ["DRDO Technician A","DRDO","Technician","Technician posts in DRDO"],
+  ["BARC","Bhabha Atomic Research Centre","Research","Scientific & technical positions"],
+  ["BSF Recruitment","BSF","Paramilitary","Constable, HC, ASI & officer-level in BSF"],
+  ["CRPF Constable","CRPF","Paramilitary","Constable (GD/Technical/Tradesman) in CRPF"],
+  ["CAPF (via SSC)","SSC / MHA","CPO / SI","CPO/SI in CRPF, BSF, CISF, ITBP, SSB"],
+  ["Assam Rifles","Ministry of Home Affairs","Paramilitary","Riflemen and officer-level posts"],
+  ["Sainik School (AISSEE)","NTA","School","Class 6 & 9 admissions to Sainik Schools"],
+];
+
+const bankingAllData = [
+  ["SBI PO","SBI","PO","Probationary Officer in SBI"],
+  ["SBI Clerk","SBI","Clerk","Junior Associate (Customer Support & Sales)"],
+  ["SBI CBO","SBI","Officer","Circle Based Officer posts"],
+  ["SBI Apprentice","SBI","Apprentice","Apprentice – National Apprenticeship Scheme"],
+  ["IBPS PO","IBPS","PO","Probationary Officer in nationalized banks"],
+  ["IBPS Clerk","IBPS","Clerk","Clerical cadre in nationalized banks"],
+  ["IBPS SO","IBPS","Specialist","IT, Agriculture, HR, Law, Marketing roles"],
+  ["IBPS RRB Officer Scale I/II/III","IBPS","RRB Officer","Officers in Regional Rural Banks"],
+  ["IBPS RRB Office Assistant","IBPS","RRB Clerk","Multipurpose staff in Regional Rural Banks"],
+  ["RBI Grade B","Reserve Bank of India","Grade B","Grade B General/DEPR/DSIM officers"],
+  ["RBI Assistant","Reserve Bank of India","Assistant","Assistant cadre in RBI"],
+  ["RBI Security Guard","Reserve Bank of India","Security","Security Guard posts in RBI"],
+  ["NABARD Grade A/B","NABARD","Development","Development Assistant & Officers"],
+  ["SEBI Grade A","SEBI","Securities","Officers in SEBI"],
+  ["IDBI Bank Executives","IDBI Bank","Executive","Executive posts in IDBI Bank"],
+  ["IDBI Assistant Manager","IDBI Bank","Asst. Manager","Assistant Manager posts in IDBI"],
+  ["IDBI Executive","IDBI Bank","Executive","Executive grade posts"],
+  ["ECGC PO","Export Credit Guarantee Corp.","PO","Probationary Officer in ECGC"],
+  ["IPPB (India Post Payments Bank)","IPPB","Officer","Officers & Executive posts"],
+  ["Bank of Baroda PO","Bank of Baroda","PO","Probationary Officer in BOB"],
+  ["Bank of Baroda SO","Bank of Baroda","SO","Specialist Officer in BOB"],
+  ["Bank of India","Bank of India","PO / Clerk","PO/Clerk/SO posts in BOI"],
+  ["Canara Bank PO/SO","Canara Bank","Officer","Officers & Specialists in Canara Bank"],
+  ["Central Bank of India SO","Central Bank of India","SO","Specialist Officers"],
+  ["Indian Bank PO","Indian Bank","PO","Probationary Officer in Indian Bank"],
+  ["Federal Bank PO","Federal Bank","PO","Probationary Officer in Federal Bank"],
+  ["Saraswat Bank","Saraswat Bank","Officer","Officer & Clerk posts"],
+  ["Nainital Bank","Nainital Bank","Trainee","Management Trainee & Clerk"],
+  ["LVB PO","Lakshmi Vilas Bank","PO","Probationary Officer"],
+  ["JAIIB","IIBF","Certification","Jr. Associate of Indian Institute of Bankers"],
+  ["IIBF Exams (CAIIB etc.)","IIBF","Certification","Banking certification & professional exams"],
+  ["EPFO SSA","EPFO","SSA","Social Security Assistant in EPFO"],
+  ["Syndicate Bank PO","Syndicate Bank (now Canara)","PO","Probationary Officer"],
+];
+
+const bankingOtherData = bankingAllData.slice(14); // rows 15–33
+
+const tagMap = {
+  "10+2 Level":"tag-red","Graduate":"tag-yellow","Air Force":"tag-sky","Group X & Y":"tag-sky","Navy":"tag-blue",
+  "Maritime":"tag-teal","Technical":"tag-blue","Agnipath":"tag-red","Part-time":"tag-orange","Support":"tag-blue",
+  "Technician":"tag-blue","Research":"tag-purple","Paramilitary":"tag-red","CPO / SI":"tag-red","School":"tag-teal",
+  "PO":"tag-blue","Clerk":"tag-teal","Officer":"tag-green","Apprentice":"tag-sky","Specialist":"tag-teal",
+  "RRB Officer":"tag-green","RRB Clerk":"tag-green","Grade B":"tag-orange","Assistant":"tag-orange",
+  "Security":"tag-red","Development":"tag-green","Securities":"tag-purple","Executive":"tag-blue",
+  "Asst. Manager":"tag-blue","SO":"tag-purple","Trainee":"tag-sky","Certification":"tag-purple","SSA":"tag-teal",
+};
+
+function makeCards(data) {
+  return data.map((r, i) => {
+    const tagClass = tagMap[r[2]] || "tag-blue";
+    return `<a class="exam-card" href="#" style="animation-delay:${0.04 + i * 0.025}s">
+      <div class="exam-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="exam-body">
+        <div class="exam-name">${r[0]}</div>
+        <div class="exam-body-row">
+          <span class="exam-conductor"><svg width="10" height="10"><use href="#i-building"/></svg>${r[1]}</span>
+          <span class="exam-tag ${tagClass}">${r[2]}</span>
+        </div>
+        <div class="exam-desc">${r[3]}</div>
+      </div>
+      <div class="exam-arrow"><svg width="8" height="8"><use href="#i-chevron"/></svg></div>
+    </a>`;
+  }).join('');
+}
+
+document.getElementById('defence-all-grid').innerHTML   = makeCards(defenceAllData);
+document.getElementById('banking-all-grid').innerHTML   = makeCards(bankingAllData);
+document.getElementById('banking-other-grid').innerHTML = makeCards(bankingOtherData);
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-body').forEach(t => t.style.display='none');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('tab-'+tab);
+  el.style.display = 'flex';
+  btn.classList.add('active');
+  retrigger(el.querySelector('.sub-panel.active'));
+}
+
+function switchCat(tab, cat, item) {
+  const tabEl = document.getElementById('tab-'+tab);
+  tabEl.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+  item.classList.add('active');
+  tabEl.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(tab+'-'+cat);
+  panel.classList.add('active');
+  retrigger(panel);
+}
+
+function retrigger(panel) {
+  if (!panel) return;
+  panel.querySelectorAll('.exam-card').forEach(c => {
+    c.style.animation='none';
+    void c.offsetHeight;
+    c.style.animation='';
+  });
+}
+</script>
+</body>
+</html>
