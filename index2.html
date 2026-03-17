@@ -915,6 +915,33 @@ function filterStates() {
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
+// Drag & Wheel to Scroll for Tabs
+const tabsContainer = document.querySelector('.tabs');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+tabsContainer.addEventListener('mousedown', (e) => {
+  isDown = true;
+  startX = e.pageX - tabsContainer.offsetLeft;
+  scrollLeft = tabsContainer.scrollLeft;
+});
+tabsContainer.addEventListener('mouseleave', () => { isDown = false; });
+tabsContainer.addEventListener('mouseup', () => { isDown = false; });
+tabsContainer.addEventListener('mousemove', (e) => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - tabsContainer.offsetLeft;
+  const walk = (x - startX) * 2; 
+  tabsContainer.scrollLeft = scrollLeft - walk;
+});
+tabsContainer.addEventListener('wheel', (e) => {
+  if (e.deltaY !== 0) {
+    e.preventDefault();
+    tabsContainer.scrollLeft += e.deltaY * 1.5;
+  }
+});
+
 buildAll();
 </script>
 </body>

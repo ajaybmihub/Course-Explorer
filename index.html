@@ -477,7 +477,7 @@
           animateValue(`q-${info.key}`, 0, sumQ, 1400, info.name === "Tech Track" ? "Questions" : undefined);
           totalQAll += sumQ;
         }
-        if (info.name !== "Tech Track") totalExamsAll += count;
+        totalExamsAll += count;
 
         results[i] = { info, cats: Array.from(catSet) };
 
