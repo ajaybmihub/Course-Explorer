@@ -300,6 +300,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
   <symbol id="s-mail"        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
   <symbol id="s-archive"     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></symbol>
   <symbol id="s-activity"    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+  <symbol id="s-dash"      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"   stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
 </svg>
 
 <div class="page">
@@ -307,10 +308,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
     <div class="plabel">Complete Directory</div>
     <div class="ptitle">India Govt Exams — <em>All 369 Exams</em></div>
     <div class="psub">Every national, state and PSU exam in one place. Browse by category, filter by level, or search instantly.</div>
-    <a href="index.html" class="nav-btn">
-      <svg><use href="#s-chevl"/></svg>
-      Back to Explorer
-    </a>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <a href="Four tracks table.html" class="nav-btn">
+        <svg><use href="#s-chevl"/></svg>
+        Back to Explorer
+      </a>
+      <a href="index.html" class="nav-btn" style="background: rgba(255,45,85,0.1); border: 1px solid rgba(255,45,85,0.2); color: var(--acc); box-shadow: none; margin-top: 20px;">
+        <svg><use href="#s-dash"/></svg>
+        Analytics Dashboard
+      </a>
+    </div>
     <div class="stats">
       <div class="stat"><div class="stat-icon ic-acc"><svg><use href="#s-globe"/></svg></div><div><div class="stat-num">369</div><div class="stat-lbl">Total Exams</div></div></div>
       <div class="stat"><div class="stat-icon ic-blue"><svg><use href="#s-layers"/></svg></div><div><div class="stat-num">15</div><div class="stat-lbl">Categories</div></div></div>
