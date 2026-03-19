@@ -419,16 +419,22 @@
 
   // ── DYNAMIC DATA FETCH & DASHBOARD HYDRATION ──
   const TRACKS_INFO = [
-    { key: "jee",     name: "JEE / NEET Track", file: "JEE NEET Track.json"  },
-    { key: "govt",    name: "Govt Exams Track", file: "Govt Exams Track.json" },
-    { key: "banking", name: "Banking Track",    file: "Banking Track.json"    },
-    { key: "tech",    name: "Tech Track",       file: "tech track.json"       }
+    { key: "jee",     name: "JEE / NEET Track", file: "data/JEE NEET Track.json"  },
+    { key: "govt",    name: "Govt Exams Track", file: "data/Govt Exams Track.json" },
+    { key: "banking", name: "Banking Track",    file: "data/Banking Track.json"    },
+    { key: "tech",    name: "Tech Track",       file: "data/tech track.json"       }
   ];
 
   async function loadDashboardData() {
     let totalExamsAll = 0;
     let totalQAll = 0;
     const results = new Array(TRACKS_INFO.length).fill(null);
+
+    let progressData = null;
+    try {
+      const pRes = await fetch('http://localhost:5000/api/progress');
+      progressData = await pRes.json();
+    } catch(err) { console.error("Progress fetch failed:", err); }
 
     const fetches = TRACKS_INFO.map(async (info, i) => {
       try {
@@ -456,10 +462,12 @@
           validItems.forEach(d => {
             if (d["Category"] && d["Category"] !== "Category") catSet.add(d["Category"]);
             const key = `${d["Category"]}|${d["Topics and Domain Covered"]}`;
-            topicMap.add(key);
-            const qStr = (d["Question Count"] || '').toString().replace(/,/g, '');
-            const qMatch = qStr.match(/\d+/);
-            if (qMatch) sumQ += parseInt(qMatch[0], 10);
+            if (!topicMap.has(key)) {
+              topicMap.add(key);
+              const qStr = (d["Question Count"] || '').toString().replace(/,/g, '');
+              const qMatch = qStr.match(/\d+/);
+              if (qMatch) sumQ += parseInt(qMatch[0], 10);
+            }
           });
           count = topicMap.size;
         } else {
@@ -479,6 +487,28 @@
         }
         totalExamsAll += count;
 
+        if (progressData && progressData.tracks[info.name]) {
+            const trackProg = progressData.tracks[info.name];
+            let percent = 0;
+            if (info.name !== "Tech Track" && trackProg.target > 0) {
+                percent = (trackProg.updated / trackProg.target) * 100;
+            } else if (info.name === "Tech Track") {
+                percent = trackProg.target > 0 ? (trackProg.updated / trackProg.target) * 100 : 0;
+            }
+            
+            const pBarContainer = document.querySelector(`#cnt-${info.key}`)?.closest('.report-box');
+            if (pBarContainer) {
+                const pFill = pBarContainer.querySelector('.progress-fill');
+                if (pFill) {
+                    pFill.style.width = Math.min(100, Math.max(0, percent)) + "%";
+                    if (percent === 0) {
+                        pFill.style.background = 'transparent';
+                        pFill.style.boxShadow = 'none';
+                    }
+                }
+            }
+        }
+
         results[i] = { info, cats: Array.from(catSet) };
 
       } catch (err) {
@@ -490,7 +520,25 @@
 
     animateValue("stat-exams", 0, totalExamsAll, 1200);
     animateValue("stat-papers", 0, totalQAll, 1400);
-    animateValue("stat-years", 0, 15, 1000, 'Yrs');
+
+    if (progressData) {
+        const totalUpdated = progressData.totalUpdatedYears || 0;
+        const totalTarget = progressData.targetYears || 5985;
+        const progressPct = ((totalUpdated / totalTarget) * 100).toFixed(1);
+        
+        const readinessValueEl = document.querySelectorAll('.stat-card .stat-value')[2];
+        const readinessTrendEl = document.querySelectorAll('.stat-card .stat-trend')[2];
+        
+        if (readinessValueEl) {
+            animateValue("stat-readiness", 0, progressPct, 1500, '%');
+            // Since animateValue overwrites format and handles ints, we explicitly set the smooth innerHTML here:
+            readinessValueEl.innerHTML = progressPct + "%";
+        }
+        if (readinessTrendEl) {
+            readinessTrendEl.innerHTML = `★ ${totalUpdated} / ${totalTarget} Years Synced`;
+            readinessTrendEl.className = "stat-trend " + (progressPct >= 100 ? "trend-up" : "trend-neutral");
+        }
+    }
 
     // Render Quick Notes
     const qnGrid = document.getElementById('qn-grid');

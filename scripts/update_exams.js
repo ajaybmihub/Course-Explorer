@@ -1,5 +1,6 @@
 const fs = require('fs');
-const file = 'e:/Github/Course-Explorer/index2.html';
+const path = require('path');
+const file = path.join(__dirname, '..', 'legacy_ui', 'index2.html');
 let html = fs.readFileSync(file, 'utf8');
 
 const match = html.match(/const EXAM_DATA = (\{[\s\S]*?\});/);

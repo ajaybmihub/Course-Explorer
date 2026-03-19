@@ -206,6 +206,84 @@ body {
 }
 .tab-body.hidden { display: none; }
 
+/* Availability Badges */
+.badge-live, .badge-soon, .badge-live-sm, .badge-soon-sm {
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.badge-live, .badge-live-sm {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8; /* Cyan/Blue to indicate 'Available' without implying 'Complete' if empty */
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.badge-soon, .badge-soon-sm {
+    background: rgba(148, 163, 184, 0.1);
+    color: var(--text-muted);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* Minimalist Empty State */
+.minimal-empty-container {
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 40px;
+}
+.empty-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.empty-btn:hover {
+    transform: translateY(-2px);
+    background: var(--accent-hover);
+}
+.minimal-empty-ui {
+    max-width: 500px;
+    text-align: center;
+}
+.m-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+.m-title span {
+    color: var(--accent);
+}
+.m-desc {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+.m-pills {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+.m-pill {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text-secondary);
+}
+
 /* Content area (JS injection target) */
 #content-area {
     display: flex;
@@ -796,8 +874,208 @@ body {
     border-color: rgba(0,214,143,0.25);
 }
 
-/* Pills: eligibility + frequency */
-.epills { display: flex; gap: 5px; flex-wrap: wrap; }
+/* ── YEAR CARDS ── */
+.year-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    padding: 20px;
+    animation: fadeIn 0.4s var(--ease);
+}
+.year-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    transition: all 0.2s var(--ease);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.year-card:hover {
+    background: var(--accent-dim);
+    border-color: var(--accent-border);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.2);
+    color: var(--accent);
+}
+.year-card::after {
+    content: 'View Papers';
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.year-card:hover::after { opacity: 1; }
+
+/* ── PAPER CARDS ── */
+.paper-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 20px;
+}
+.paper-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+.paper-card:hover {
+    background: var(--bg-elevated);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+.paper-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+.paper-card p {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.paper-card p::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+}
+
+/* ── QUESTION CARDS ── */
+.question-container {
+    padding: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+.question-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.4s var(--ease) both;
+}
+.question-card h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+.options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.option {
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.option:hover {
+    background: var(--bg-elevated);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+.option::before {
+    content: '';
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.option.selected {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--text-primary);
+}
+.option.selected::before {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 3px var(--bg-card);
+}
+
+.answer-box {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+.show-answer-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.show-answer-btn:hover {
+    background: var(--border-hover);
+    color: var(--text-primary);
+}
+.explanation {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    background: rgba(0,214,143,0.05);
+    padding: 12px;
+    border-left: 3px solid var(--green);
+    border-radius: 4px;
+}
+
+/* ── UTILS ── */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+.back-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.back-link:hover { text-decoration: underline; }
 .epill {
     font-size: 9px;
     color: var(--text-muted);
