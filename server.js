@@ -12,15 +12,26 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // ── MONGOOSE SETUP ──
-const MONGO_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://ajaybmihub:ajay2004@cluster7.sid1ior.mongodb.net/";
+
+if (!MONGO_URI) {
+  console.error("❌ Error: MONGO_URI is missing. Set it in your environment variables or .env file.");
+  process.exit(1);
+}
 
 mongoose.connect(MONGO_URI)
   .then(async () => {
-    console.log("✅ Successfully connected to MongoDB.");
+    console.log("✅ Successfully connected to MongoDB Cluster.");
     const collections = await mongoose.connection.db.listCollections().toArray();
-    console.log(`📂 Collections in DB: ${collections.map(c => c.name).join(", ")}`);
+    console.log(`📂 Collections available: ${collections.map(c => c.name).join(", ")}`);
   })
-  .catch(err => console.error("❌ MongoDB connection error:", err));
+  .catch(err => {
+    console.error("❌ MongoDB connection error:", err.message);
+    // Log helpful advice if connection fails
+    if (err.message.includes("whitelist")) {
+      console.log("💡 Tip: Make sure your deployment IP is in the MongoDB Atlas whitelist.");
+    }
+  });
 
 const questionSchema = new mongoose.Schema({
   department: String,
