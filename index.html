@@ -1,579 +1,1006 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EduPath — Hackathon Analytics Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg-primary:    #050507;
-    --bg-secondary:  #0a0b0f;
-    --bg-card:       #0e1015;
-    --bg-elevated:   #151820;
-    --accent:        #FF2D55;
-    --accent-dim:    rgba(255,45,85,0.12);
-    --accent-border: rgba(255,45,85,0.28);
-    --border:        rgba(255,255,255,0.06);
-    --border-hover:  rgba(255,255,255,0.12);
-    --text-primary:  #FFFFFF;
-    --text-secondary:#CBD5E1;
-    --text-muted:    #8b95a5;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPath — Hackathon Analytics Dashboard</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #050507;
+      --bg-secondary: #0a0b0f;
+      --bg-card: #0e1015;
+      --bg-elevated: #151820;
+      --accent: #FF2D55;
+      --accent-dim: rgba(255, 45, 85, 0.12);
+      --accent-border: rgba(255, 45, 85, 0.28);
+      --border: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.12);
+      --text-primary: #FFFFFF;
+      --text-secondary: #CBD5E1;
+      --text-muted: #8b95a5;
 
-    --green: #00E676; --green-dim: rgba(0,230,118,0.10);
-    --orange: #FF9100; --orange-dim: rgba(255,145,0,0.10);
-    --red: #FF3D00; --red-dim: rgba(255,61,0,0.10);
-    --blue: #00E5FF; --blue-dim: rgba(0,229,255,0.10);
-    --purple: #FFD600; --purple-dim: rgba(255,214,0,0.10);
-    
-    --ease: cubic-bezier(0.25, 1, 0.5, 1);
-    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
+      --green: #00E676;
+      --green-dim: rgba(0, 230, 118, 0.10);
+      --orange: #FF9100;
+      --orange-dim: rgba(255, 145, 0, 0.10);
+      --red: #FF3D00;
+      --red-dim: rgba(255, 61, 0, 0.10);
+      --blue: #00E5FF;
+      --blue-dim: rgba(0, 229, 255, 0.10);
+      --purple: #FFD600;
+      --purple-dim: rgba(255, 214, 0, 0.10);
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: var(--bg-primary);
-    background-image: 
-      radial-gradient(circle at 15% 50%, rgba(255,45,85,0.03) 0%, transparent 40%),
-      radial-gradient(circle at 85% 30%, rgba(0,229,255,0.02) 0%, transparent 40%);
-    color: var(--text-primary);
-    min-height: 100vh;
-    padding: 32px 40px 60px;
-    -webkit-font-smoothing: antialiased;
-  }
+      --ease: cubic-bezier(0.25, 1, 0.5, 1);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  /* ── HEADER ── */
-  .header {
-    max-width: 100%;
-    margin: 0 auto 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    animation: fadeUp 0.6s var(--ease) both;
-  }
-  .logo-area { display: flex; align-items: center; gap: 16px; }
-  .logo-box {
-    width: 52px; height: 52px;
-    background: linear-gradient(135deg, #ff4d6d, var(--accent));
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 10px 30px rgba(255,45,85,0.35);
-  }
-  .logo-box svg { width: 26px; height: 26px; color: #fff; }
-  .title-h { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; }
-  .title-h span { color: var(--accent); }
-  .sub-h { font-size: 14px; color: var(--text-muted); margin-top: 6px; font-weight: 500; letter-spacing: 0.2px; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-primary);
+      background-image:
+        radial-gradient(circle at 15% 50%, rgba(255, 45, 85, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(0, 229, 255, 0.02) 0%, transparent 40%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 32px 40px 60px;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  .nav-group { display: flex; gap: 12px; }
-  .nav-btn {
-    padding: 12px 20px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 13.5px;
-    font-weight: 600;
-    transition: all 0.25s var(--ease);
-  }
-  .nav-btn:hover { background: rgba(255,255,255,0.08); border-color: var(--border-hover); transform: translateY(-2px); color: #fff; }
-  .nav-btn.primary { background: var(--accent); border: 1px solid #ff4d6d; color: #fff; box-shadow: 0 6px 20px rgba(255,45,85,0.25); text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-  .nav-btn.primary:hover { background: #ff1a43; box-shadow: 0 8px 26px rgba(255,45,85,0.4); }
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
 
-  /* ── TOP STATS ── */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    max-width: 100%;
-    margin: 0 auto 40px;
-    animation: fadeUp 0.6s 0.1s var(--ease) both;
-  }
-  .stat-card {
-    background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-    border: 1px solid var(--border);
-    padding: 26px 28px;
-    border-radius: 20px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-  }
-  .stat-card::after {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-  }
-  .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 12px; display: block; }
-  .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 800; color: #fff; line-height: 1.1; letter-spacing: -1px; }
-  .stat-trend { font-size: 13px; margin-top: 10px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .trend-up { color: var(--green); }
-  .trend-neutral { color: var(--orange); }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-  /* ── MAIN CONTENT ── */
-  .dashboard-main {
-    max-width: 100%;
-    margin: 0 auto;
-    display: block;
-    animation: fadeUp 0.6s 0.2s var(--ease) both;
-  }
-  .cat-reports { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    /* ── HEADER ── */
+    .header {
+      max-width: 100%;
+      margin: 0 auto 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: fadeUp 0.6s var(--ease) both;
+    }
 
-  /* ── TRACK CARDS ── */
-  .report-box {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 28px;
-    transition: transform 0.4s var(--spring), border-color 0.3s, box-shadow 0.4s;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-  }
-  .report-box:hover {
-    transform: translateY(-4px) scale(1.01);
-    border-color: rgba(255,255,255,0.15);
-  }
-  .box-glow {
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 140px; height: 140px;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.15;
-    pointer-events: none;
-    transition: opacity 0.4s;
-  }
-  .report-box:hover .box-glow { opacity: 0.35; }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-  .box-head { display: flex; align-items: center; gap: 14px; position: relative; z-index: 2; }
-  .box-icon {
-    width: 44px; height: 44px;
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    border: 1px solid rgba(255,255,255,0.05);
-  }
-  .box-icon svg { width: 22px; height: 22px; }
-  .box-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; color: #fff; }
+    .logo-box {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #ff4d6d, var(--accent));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(255, 45, 85, 0.35);
+    }
 
-  .box-body {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin: 32px 0 24px;
-    position: relative;
-    z-index: 2;
-  }
-  .box-main-stat {
-    display: flex; flex-direction: column;
-  }
-  .main-stat-num {
-    font-size: 64px; font-weight: 800; line-height: 1; font-family: 'JetBrains Mono', monospace; 
-    letter-spacing: -2px;
-    margin-bottom: 8px;
-    background: linear-gradient(180deg, #fff 20%, rgba(255,255,255,0.6) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .main-stat-lbl {
-    font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted);
-  }
+    .logo-box svg {
+      width: 26px;
+      height: 26px;
+      color: #fff;
+    }
 
-  .box-sub-stats {
-    width: 100%; display: block;
-  }
-  .m-row { display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 6px; }
-  .m-lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-  .m-val { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: #fff; }
+    .title-h {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
 
-  .progress-bg { height: 4px; background: rgba(255,255,255,0.06); border-radius: 10px; overflow: hidden; position: relative; z-index: 2; }
-  .progress-fill { height: 100%; border-radius: 10px; transition: width 1s var(--ease); box-shadow: 0 0 10px currentColor; }
+    .title-h span {
+      color: var(--accent);
+    }
 
-  /* ── UTILS ── */
-  .ic-entrance { background: var(--blue-dim); color: var(--blue); border-color: rgba(0,229,255,0.2); }
-  .ic-govt { background: var(--orange-dim); color: var(--orange); border-color: rgba(255,145,0,0.2); }
-  .ic-banking { background: var(--green-dim); color: var(--green); border-color: rgba(0,230,118,0.2); }
-  .ic-tech { background: var(--purple-dim); color: var(--purple); border-color: rgba(255,214,0,0.2); }
+    .sub-h {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
 
-  /* ── QUICK NOTES ── */
-  .quick-notes {
-    max-width: 100%; margin: 60px auto 0;
-    animation: fadeUp 0.6s 0.3s var(--ease) both;
-  }
-  .qn-header { margin-bottom: 24px; }
-  .qn-title { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.3px; display:flex; align-items:center; gap: 10px; }
-  .qn-title::before { content: ''; width: 4px; height: 18px; background: var(--accent); border-radius: 4px; }
-  .qn-sub { font-size: 13.5px; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
-  
-  .qn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-  .qn-card { 
-    background: var(--bg-card);
-    border: 1px solid var(--border); border-radius: 20px; padding: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  }
-  .qn-card-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 16px; letter-spacing: -0.2px; }
-  .qn-pill { 
-    display: inline-block; padding: 6px 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); 
-    border-radius: 8px; font-size: 11px; font-weight: 600; color: var(--text-secondary); margin: 0 6px 8px 0; 
-  }
+    .nav-group {
+      display: flex;
+      gap: 12px;
+    }
 
-  @media (max-width: 1400px) {
-    .dashboard-main { grid-template-columns: 1fr; }
-    .cat-reports { grid-template-columns: repeat(2, 1fr); }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 800px) {
-    .cat-reports { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: 1fr; }
-    .qn-grid { grid-template-columns: 1fr; }
-    body { padding: 20px; }
-  }
-</style>
+    .nav-btn {
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.25s var(--ease);
+    }
+
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    .nav-btn.primary {
+      background: var(--accent);
+      border: 1px solid #ff4d6d;
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(255, 45, 85, 0.25);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-btn.primary:hover {
+      background: #ff1a43;
+      box-shadow: 0 8px 26px rgba(255, 45, 85, 0.4);
+    }
+
+    /* ── TOP STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 100%;
+      margin: 0 auto 40px;
+      animation: fadeUp 0.6s 0.1s var(--ease) both;
+    }
+
+    .stat-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+      border: 1px solid var(--border);
+      padding: 26px 28px;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 34px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -1px;
+    }
+
+    .stat-trend {
+      font-size: 13px;
+      margin-top: 10px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .trend-up {
+      color: var(--green);
+    }
+
+    .trend-neutral {
+      color: var(--orange);
+    }
+
+    /* ── MAIN CONTENT ── */
+    .dashboard-main {
+      max-width: 100%;
+      margin: 0 auto;
+      display: block;
+      animation: fadeUp 0.6s 0.2s var(--ease) both;
+    }
+
+    .cat-reports {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    /* ── TRACK CARDS ── */
+    .report-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      transition: transform 0.4s var(--spring), border-color 0.3s, box-shadow 0.4s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .report-box:hover {
+      transform: translateY(-4px) scale(1.01);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .box-glow {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.15;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .report-box:hover .box-glow {
+      opacity: 0.35;
+    }
+
+    .box-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .box-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .box-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .box-title {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #fff;
+    }
+
+    .box-body {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin: 32px 0 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .box-main-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main-stat-num {
+      font-size: 64px;
+      font-weight: 800;
+      line-height: 1;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -2px;
+      margin-bottom: 8px;
+      background: linear-gradient(180deg, #fff 20%, rgba(255, 255, 255, 0.6) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .main-stat-lbl {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+    }
+
+    .box-sub-stats {
+      width: 100%;
+      display: block;
+    }
+
+    .m-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+      padding-bottom: 6px;
+    }
+
+    .m-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .m-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .progress-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+      margin-top: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 1s var(--ease);
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .progress-text {
+      display: block;
+      text-align: right;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+      z-index: 2;
+      position: relative;
+    }
+
+    /* ── UTILS ── */
+    .ic-entrance {
+      background: var(--blue-dim);
+      color: var(--blue);
+      border-color: rgba(0, 229, 255, 0.2);
+    }
+
+    .ic-govt {
+      background: var(--orange-dim);
+      color: var(--orange);
+      border-color: rgba(255, 145, 0, 0.2);
+    }
+
+    .ic-banking {
+      background: var(--green-dim);
+      color: var(--green);
+      border-color: rgba(0, 230, 118, 0.2);
+    }
+
+    .ic-tech {
+      background: var(--purple-dim);
+      color: var(--purple);
+      border-color: rgba(255, 214, 0, 0.2);
+    }
+
+    /* ── QUICK NOTES ── */
+    .quick-notes {
+      max-width: 100%;
+      margin: 60px auto 0;
+      animation: fadeUp 0.6s 0.3s var(--ease) both;
+    }
+
+    .qn-header {
+      margin-bottom: 24px;
+    }
+
+    .qn-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qn-title::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    .qn-sub {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .qn-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .qn-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .qn-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      letter-spacing: -0.2px;
+    }
+
+    .qn-pill {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin: 0 6px 8px 0;
+    }
+
+    @media (max-width: 1400px) {
+      .dashboard-main {
+        grid-template-columns: 1fr;
+      }
+
+      .cat-reports {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 800px) {
+      .cat-reports {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .qn-grid {
+        grid-template-columns: 1fr;
+      }
+
+      body {
+        padding: 20px;
+      }
+    }
+
+    /* ── SKELETON LOADER ── */
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    .skeleton:empty {
+      display: inline-block;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite linear;
+      user-select: none;
+      min-height: 1em;
+    }
+
+    .stat-value.skeleton:empty {
+      min-width: 80px;
+      height: 34px;
+      border-radius: 8px;
+    }
+
+    .main-stat-num.skeleton:empty {
+      min-width: 100px;
+      height: 50px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+
+    .m-val.skeleton:empty {
+      min-width: 45px;
+      height: 16px;
+      border-radius: 4px;
+    }
+
+    .stat-trend.skeleton:empty {
+      min-width: 120px;
+      height: 16px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- ══ SVG SPRITE ══ -->
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <symbol id="ic-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
-  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
-  <symbol id="ic-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
-  <symbol id="ic-atom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.55-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.55 11.9 4.5z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z"/></symbol>
-  <symbol id="ic-bank" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="5 6 12 3 19 6"/><line x1="4" y1="10" x2="4" y2="21"/><line x1="12" y1="10" x2="12" y2="21"/><line x1="20" y1="10" x2="20" y2="21"/></symbol>
-  <symbol id="ic-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2M15 20v2M9 2v2M9 20v2M2 15h2M20 15h2"/></symbol>
-  <symbol id="ic-inst" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="3" y1="11" x2="21" y2="11"/><polyline points="5 11 5 22"/><polyline points="19 11 19 22"/><polyline points="3 7 12 2 21 7"/></symbol>
-</svg>
+  <!-- ══ SVG SPRITE ══ -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="ic-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="14" y="14" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" />
+    </symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+      stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </symbol>
+    <symbol id="ic-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </symbol>
+    <symbol id="ic-atom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <circle cx="12" cy="12" r="1" />
+      <path
+        d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.53-4.53-9.86-6.55-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.53 4.53 9.86 6.55 11.9 4.5z" />
+      <path
+        d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5z" />
+    </symbol>
+    <symbol id="ic-bank" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <line x1="3" y1="21" x2="21" y2="21" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+      <polyline points="5 6 12 3 19 6" />
+      <line x1="4" y1="10" x2="4" y2="21" />
+      <line x1="12" y1="10" x2="12" y2="21" />
+      <line x1="20" y1="10" x2="20" y2="21" />
+    </symbol>
+    <symbol id="ic-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <rect x="9" y="9" width="6" height="6" />
+      <path d="M15 2v2M15 20v2M9 2v2M9 20v2M2 15h2M20 15h2" />
+    </symbol>
+    <symbol id="ic-inst" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <line x1="3" y1="22" x2="21" y2="22" />
+      <line x1="3" y1="11" x2="21" y2="11" />
+      <polyline points="5 11 5 22" />
+      <polyline points="19 11 19 22" />
+      <polyline points="3 7 12 2 21 7" />
+    </symbol>
+  </svg>
 
-<header class="header">
-  <div class="logo-area">
-    <div class="logo-box"><svg><use href="#ic-dash"/></svg></div>
-    <div>
-      <div class="title-h">Analytics <span>Dashboard</span></div>
-      <div class="sub-h">All Four Tracks </div>
+  <header class="header">
+    <div class="logo-area">
+      <div class="logo-box"><svg>
+          <use href="#ic-dash" />
+        </svg></div>
+      <div>
+        <div class="title-h">Analytics <span>Dashboard</span></div>
+        <div class="sub-h">All Four Tracks </div>
+      </div>
+    </div>
+    <div class="nav-group">
+      <a href="Four tracks table.html" class="nav-btn">Four Tracks</a>
+      <a href="https://docs.google.com/spreadsheets/d/1zqxlJxwjeiyorOr3Qex07CglcPiTfaAhg-xXi5I-AHQ/export?format=xlsx"
+        class="nav-btn primary" target="_blank" download>Export Excel</a>
+    </div>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-label">Total Exams</span>
+      <div class="stat-value skeleton" id="stat-exams"></div>
+      <div class="stat-trend trend-up">+24 Topics</div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-label">Total Questions</span>
+      <div class="stat-value skeleton" id="stat-papers"></div>
+      <div class="stat-trend trend-neutral">2010 - 2025</div>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-label">Readiness Index</span>
+      <div class="stat-value skeleton"></div>
+      <div class="stat-trend trend-neutral skeleton"></div>
     </div>
   </div>
-  <div class="nav-group">
-    <a href="Four tracks table.html" class="nav-btn">Four Tracks</a>
-    <a href="index2.html" class="nav-btn">Govt Exams</a>
-    <a href="https://docs.google.com/spreadsheets/d/1zqxlJxwjeiyorOr3Qex07CglcPiTfaAhg-xXi5I-AHQ/export?format=xlsx" class="nav-btn primary" target="_blank" download>Export Excel</a>
+
+  <main class="dashboard-main">
+    <div class="cat-reports">
+
+      <!-- ENTRANCE -->
+      <a href="Four tracks table.html?track=JEE+%2F+NEET+Track" class="report-box"
+        style="border-top: 2px solid rgba(0,229,255,0.4);">
+        <div class="box-glow" style="background: var(--blue);"></div>
+        <div class="box-head">
+          <div class="box-icon ic-entrance"><svg>
+              <use href="#ic-atom" />
+            </svg></div>
+          <div class="box-title">JEE / NEET Track</div>
+        </div>
+
+        <div class="box-body">
+          <div class="box-main-stat">
+            <div id="cnt-jee" class="main-stat-num skeleton"></div>
+            <div class="main-stat-lbl">Exams Covered</div>
+          </div>
+          <div class="box-sub-stats">
+            <div class="m-row"><span class="m-lbl">Total Questions</span><span class="m-val skeleton" id="q-jee"
+                style="color:var(--blue)"></span></div>
+            <div class="m-row"><span class="m-lbl">Years Range</span><span class="m-val">2010 - 2025</span></div>
+          </div>
+        </div>
+
+        <div class="progress-bg">
+          <div class="progress-fill" style="width: 100%; background: var(--blue); color: var(--blue);"></div>
+        </div>
+      </a>
+
+      <!-- GOVT -->
+      <a href="Four tracks table.html?track=Govt+Exams+Track" class="report-box"
+        style="border-top: 2px solid rgba(255,145,0,0.4);">
+        <div class="box-glow" style="background: var(--orange);"></div>
+        <div class="box-head">
+          <div class="box-icon ic-govt"><svg>
+              <use href="#ic-inst" />
+            </svg></div>
+          <div class="box-title">Govt Exams Track</div>
+        </div>
+
+        <div class="box-body">
+          <div class="box-main-stat">
+            <div id="cnt-govt" class="main-stat-num skeleton"></div>
+            <div class="main-stat-lbl">Exams Covered</div>
+          </div>
+          <div class="box-sub-stats">
+            <div class="m-row"><span class="m-lbl">Total Questions</span><span class="m-val skeleton" id="q-govt"
+                style="color:var(--orange)"></span></div>
+            <div class="m-row"><span class="m-lbl">Years Range</span><span class="m-val">2008 - 2026</span></div>
+          </div>
+        </div>
+
+        <div class="progress-bg">
+          <div class="progress-fill" style="width: 100%; background: var(--orange); color: var(--orange);"></div>
+        </div>
+      </a>
+
+      <!-- BANKING -->
+      <a href="Four tracks table.html?track=Banking+Track" class="report-box"
+        style="border-top: 2px solid rgba(0,230,118,0.4);">
+        <div class="box-glow" style="background: var(--green);"></div>
+        <div class="box-head">
+          <div class="box-icon ic-banking"><svg>
+              <use href="#ic-bank" />
+            </svg></div>
+          <div class="box-title">Banking Track</div>
+        </div>
+
+        <div class="box-body">
+          <div class="box-main-stat">
+            <div id="cnt-banking" class="main-stat-num skeleton"></div>
+            <div class="main-stat-lbl">Exams Covered</div>
+          </div>
+          <div class="box-sub-stats">
+            <div class="m-row"><span class="m-lbl">Total Questions</span><span class="m-val skeleton" id="q-banking"
+                style="color:var(--green)"></span></div>
+            <div class="m-row"><span class="m-lbl">Years Range</span><span class="m-val">2012 - 2026</span></div>
+          </div>
+        </div>
+
+        <div class="progress-bg">
+          <div class="progress-fill" style="width: 100%; background: var(--green); color: var(--green);"></div>
+        </div>
+      </a>
+
+      <!-- TECH TRACK -->
+      <a href="Four tracks table.html?track=Tech+Track" class="report-box"
+        style="border-top: 2px solid rgba(255,214,0,0.4);">
+        <div class="box-glow" style="background: var(--purple);"></div>
+        <div class="box-head">
+          <div class="box-icon ic-tech"><svg>
+              <use href="#ic-cpu" />
+            </svg></div>
+          <div class="box-title">Tech Track</div>
+        </div>
+
+        <div class="box-body">
+          <div class="box-main-stat">
+            <div id="cnt-tech" class="main-stat-num skeleton"></div>
+            <div class="main-stat-lbl">Topics Covered</div>
+          </div>
+          <div class="box-sub-stats">
+            <div class="m-row"><span class="m-lbl">Practice Sets</span><span class="m-val skeleton" id="q-tech"
+                style="color:var(--purple)"></span></div>
+            <div class="m-row"><span class="m-lbl">Domains</span><span class="m-val">CS Fundamentals</span></div>
+          </div>
+        </div>
+
+        <div class="progress-bg">
+          <div class="progress-fill" style="width: 100%; background: var(--purple); color: var(--purple);"></div>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <div class="quick-notes">
+    <div class="qn-header">
+      <div class="qn-title">Track Collections</div>
+      <div class="qn-sub">A quick overview of categories inside each track</div>
+    </div>
+    <div class="qn-grid" id="qn-grid">
+      <!-- Dynamic categories load here -->
+    </div>
   </div>
-</header>
 
-<div class="stats-grid">
-  <div class="stat-card">
-    <span class="stat-label">Total Exams</span>
-    <div class="stat-value" id="stat-exams">...</div>
-    <div class="stat-trend trend-up">+24 Topics</div>
-  </div>
-  
-  <div class="stat-card">
-    <span class="stat-label">Total Questions</span>
-    <div class="stat-value" id="stat-papers">...</div>
-    <div class="stat-trend trend-neutral">2010 - 2025</div>
-  </div>
+  <script>
+    function animateValue(id, start, end, duration, formatStr = false) {
+      const obj = document.getElementById(id);
+      if (!obj) return;
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        // easeOut function
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+        const val = Math.floor(easeProgress * (end - start) + start);
 
-  <div class="stat-card">
-    <span class="stat-label">Readiness Index</span>
-    <div class="stat-value">98.4%</div>
-    <div class="stat-trend trend-up">Target Achieved</div>
-  </div>
-</div>
+        let out = val.toLocaleString();
+        if (formatStr && formatStr === 'Yrs') out += ' Yrs';
+        else if (formatStr) out += ' ' + formatStr;
 
-<main class="dashboard-main">
-  <div class="cat-reports">
-    
-    <!-- ENTRANCE -->
-    <a href="Four tracks table.html?track=JEE+%2F+NEET+Track" class="report-box" style="border-top: 2px solid rgba(0,229,255,0.4);">
-      <div class="box-glow" style="background: var(--blue);"></div>
-      <div class="box-head">
-        <div class="box-icon ic-entrance"><svg><use href="#ic-atom"/></svg></div>
-        <div class="box-title">JEE / NEET Track</div>
-      </div>
-      
-      <div class="box-body">
-        <div class="box-main-stat">
-          <div id="cnt-jee" class="main-stat-num">—</div>
-          <div class="main-stat-lbl">Exams Covered</div>
-        </div>
-        <div class="box-sub-stats">
-          <div class="m-row"><span class="m-lbl">Total Questions</span><span class="m-val" id="q-jee" style="color:var(--blue)">—</span></div>
-          <div class="m-row"><span class="m-lbl">Years Range</span><span class="m-val">2010 - 2025</span></div>
-        </div>
-      </div>
-
-      <div class="progress-bg"><div class="progress-fill" style="width: 100%; background: var(--blue); color: var(--blue);"></div></div>
-    </a>
-
-    <!-- GOVT -->
-    <a href="Four tracks table.html?track=Govt+Exams+Track" class="report-box" style="border-top: 2px solid rgba(255,145,0,0.4);">
-      <div class="box-glow" style="background: var(--orange);"></div>
-      <div class="box-head">
-        <div class="box-icon ic-govt"><svg><use href="#ic-inst"/></svg></div>
-        <div class="box-title">Govt Exams Track</div>
-      </div>
-      
-      <div class="box-body">
-        <div class="box-main-stat">
-          <div id="cnt-govt" class="main-stat-num">—</div>
-          <div class="main-stat-lbl">Exams Covered</div>
-        </div>
-        <div class="box-sub-stats">
-          <div class="m-row"><span class="m-lbl">Total Questions</span><span class="m-val" id="q-govt" style="color:var(--orange)">—</span></div>
-          <div class="m-row"><span class="m-lbl">Years Range</span><span class="m-val">2008 - 2026</span></div>
-        </div>
-      </div>
-
-      <div class="progress-bg"><div class="progress-fill" style="width: 100%; background: var(--orange); color: var(--orange);"></div></div>
-    </a>
-
-    <!-- BANKING -->
-    <a href="Four tracks table.html?track=Banking+Track" class="report-box" style="border-top: 2px solid rgba(0,230,118,0.4);">
-      <div class="box-glow" style="background: var(--green);"></div>
-      <div class="box-head">
-        <div class="box-icon ic-banking"><svg><use href="#ic-bank"/></svg></div>
-        <div class="box-title">Banking Track</div>
-      </div>
-      
-      <div class="box-body">
-        <div class="box-main-stat">
-          <div id="cnt-banking" class="main-stat-num">—</div>
-          <div class="main-stat-lbl">Exams Covered</div>
-        </div>
-        <div class="box-sub-stats">
-          <div class="m-row"><span class="m-lbl">Total Questions</span><span class="m-val" id="q-banking" style="color:var(--green)">—</span></div>
-          <div class="m-row"><span class="m-lbl">Years Range</span><span class="m-val">2012 - 2026</span></div>
-        </div>
-      </div>
-
-      <div class="progress-bg"><div class="progress-fill" style="width: 100%; background: var(--green); color: var(--green);"></div></div>
-    </a>
-
-    <!-- TECH TRACK -->
-    <a href="Four tracks table.html?track=Tech+Track" class="report-box" style="border-top: 2px solid rgba(255,214,0,0.4);">
-      <div class="box-glow" style="background: var(--purple);"></div>
-      <div class="box-head">
-        <div class="box-icon ic-tech"><svg><use href="#ic-cpu"/></svg></div>
-        <div class="box-title">Tech Track</div>
-      </div>
-      
-      <div class="box-body">
-        <div class="box-main-stat">
-          <div id="cnt-tech" class="main-stat-num">—</div>
-          <div class="main-stat-lbl">Topics Covered</div>
-        </div>
-        <div class="box-sub-stats">
-          <div class="m-row"><span class="m-lbl">Practice Sets</span><span class="m-val" id="q-tech" style="color:var(--purple)">—</span></div>
-          <div class="m-row"><span class="m-lbl">Domains</span><span class="m-val">CS Fundamentals</span></div>
-        </div>
-      </div>
-
-      <div class="progress-bg"><div class="progress-fill" style="width: 100%; background: var(--purple); color: var(--purple);"></div></div>
-    </a>
-
-  </div>
-</main>
-
-<div class="quick-notes">
-  <div class="qn-header">
-    <div class="qn-title">Track Collections</div>
-    <div class="qn-sub">A quick overview of categories inside each track</div>
-  </div>
-  <div class="qn-grid" id="qn-grid">
-    <!-- Dynamic categories load here -->
-  </div>
-</div>
-
-<script>
-  function animateValue(id, start, end, duration, formatStr = false) {
-    const obj = document.getElementById(id);
-    if (!obj) return;
-    let startTimestamp = null;
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      // easeOut function
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
-      const val = Math.floor(easeProgress * (end - start) + start);
-      
-      let out = val.toLocaleString();
-      if (formatStr && formatStr === 'Yrs') out += ' Yrs';
-      else if (formatStr) out += ' ' + formatStr; 
-
-      obj.innerHTML = out;
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-    window.requestAnimationFrame(step);
-  }
-
-  // ── DYNAMIC DATA FETCH & DASHBOARD HYDRATION ──
-  const TRACKS_INFO = [
-    { key: "jee",     name: "JEE / NEET Track", file: "data/JEE NEET Track.json"  },
-    { key: "govt",    name: "Govt Exams Track", file: "data/Govt Exams Track.json" },
-    { key: "banking", name: "Banking Track",    file: "data/Banking Track.json"    },
-    { key: "tech",    name: "Tech Track",       file: "data/tech track.json"       }
-  ];
-
-  async function loadDashboardData() {
-    let totalExamsAll = 0;
-    let totalQAll = 0;
-    const results = new Array(TRACKS_INFO.length).fill(null);
-
-    let progressData = null;
-    try {
-      const pRes = await fetch('/api/progress');
-      if (pRes.ok) {
-         progressData = await pRes.json();
-      }
-    } catch(err) { console.error("Progress fetch failed:", err); }
-
-    const fetches = TRACKS_INFO.map(async (info, i) => {
-      try {
-        const res = await fetch(info.file);
-        if (!res.ok) throw Error("Failed");
-        const rawItems = await res.json();
-        
-        let validItems = rawItems;
-        if (info.name === "Tech Track") {
-          validItems = rawItems.filter(d => 
-            d["Track Name"] === "Tech Track" && 
-            d["Topics and Domain Covered"] && 
-            d["Topics and Domain Covered"] !== "Topics and Domain Covered"
-          );
-        } else {
-          validItems = rawItems.filter(d => d["Track Name"] === info.name);
+        obj.innerHTML = out;
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
         }
+      };
+      window.requestAnimationFrame(step);
+    }
 
-        let count = 0;
-        let sumQ = 0;
-        const catSet = new Set();
+    // ── DYNAMIC DATA FETCH & DASHBOARD HYDRATION ──
+    const TRACKS_INFO = [
+      { key: "jee", name: "JEE / NEET Track", file: "data/JEE NEET Track.json" },
+      { key: "govt", name: "Govt Exams Track", file: "data/Govt Exams Track.json" },
+      { key: "banking", name: "Banking Track", file: "data/Banking Track.json" },
+      { key: "tech", name: "Tech Track", file: "data/tech track.json" }
+    ];
 
-        if (info.name === "Tech Track") {
-          const topicMap = new Set();
-          validItems.forEach(d => {
-            if (d["Category"] && d["Category"] !== "Category") catSet.add(d["Category"]);
-            const key = `${d["Category"]}|${d["Topics and Domain Covered"]}`;
-            if (!topicMap.has(key)) {
-              topicMap.add(key);
+    async function loadDashboardData() {
+      let totalExamsAll = 0;
+      let totalQAll = 0;
+      const results = new Array(TRACKS_INFO.length).fill(null);
+
+      let progressData = null;
+      try {
+        const pRes = await fetch('/api/progress');
+        if (pRes.ok) {
+          progressData = await pRes.json();
+        }
+      } catch (err) { console.error("Progress fetch failed:", err); }
+
+      const fetches = TRACKS_INFO.map(async (info, i) => {
+        try {
+          const res = await fetch(info.file);
+          if (!res.ok) throw Error("Failed");
+          const rawItems = await res.json();
+
+          let validItems = rawItems;
+          if (info.name === "Tech Track") {
+            validItems = rawItems.filter(d =>
+              d["Track Name"] === "Tech Track" &&
+              d["Topics and Domain Covered"] &&
+              d["Topics and Domain Covered"] !== "Topics and Domain Covered"
+            );
+          } else {
+            validItems = rawItems.filter(d => d["Track Name"] === info.name);
+          }
+
+          let count = 0;
+          let sumQ = 0;
+          const catSet = new Set();
+
+          if (info.name === "Tech Track") {
+            const topicMap = new Set();
+            validItems.forEach(d => {
+              if (d["Category"] && d["Category"] !== "Category") catSet.add(d["Category"]);
+              const key = `${d["Category"]}|${d["Topics and Domain Covered"]}`;
+              if (!topicMap.has(key)) {
+                topicMap.add(key);
+                const qStr = (d["Question Count"] || '').toString().replace(/,/g, '');
+                const qMatch = qStr.match(/\d+/);
+                if (qMatch) sumQ += parseInt(qMatch[0], 10);
+              }
+            });
+            count = topicMap.size;
+          } else {
+            count = validItems.length;
+            validItems.forEach(d => {
+              if (d["Category"] && d["Category"] !== "Category") catSet.add(d["Category"]);
               const qStr = (d["Question Count"] || '').toString().replace(/,/g, '');
               const qMatch = qStr.match(/\d+/);
               if (qMatch) sumQ += parseInt(qMatch[0], 10);
-            }
-          });
-          count = topicMap.size;
-        } else {
-          count = validItems.length;
-          validItems.forEach(d => {
-            if (d["Category"] && d["Category"] !== "Category") catSet.add(d["Category"]);
-            const qStr = (d["Question Count"] || '').toString().replace(/,/g, '');
-            const qMatch = qStr.match(/\d+/);
-            if (qMatch) sumQ += parseInt(qMatch[0], 10);
-          });
-        }
+            });
+          }
 
-        animateValue(`cnt-${info.key}`, 0, count, 1200);
-        if (sumQ > 0) {
-          animateValue(`q-${info.key}`, 0, sumQ, 1400, info.name === "Tech Track" ? "Questions" : undefined);
-          totalQAll += sumQ;
-        }
-        totalExamsAll += count;
+          animateValue(`cnt-${info.key}`, 0, count, 1200);
+          if (sumQ > 0) {
+            animateValue(`q-${info.key}`, 0, sumQ, 1400, info.name === "Tech Track" ? "Questions" : undefined);
+            totalQAll += sumQ;
+          }
+          totalExamsAll += count;
 
-        if (progressData && progressData.tracks[info.name]) {
+          if (progressData && progressData.tracks[info.name]) {
             const trackProg = progressData.tracks[info.name];
             let percent = 0;
             if (info.name !== "Tech Track" && trackProg.target > 0) {
-                percent = (trackProg.updated / trackProg.target) * 100;
+              percent = (trackProg.updated / trackProg.target) * 100;
             } else if (info.name === "Tech Track") {
-                percent = trackProg.target > 0 ? (trackProg.updated / trackProg.target) * 100 : 0;
+              percent = trackProg.target > 0 ? (trackProg.updated / trackProg.target) * 100 : 0;
             }
-            
+
             const pBarContainer = document.querySelector(`#cnt-${info.key}`)?.closest('.report-box');
             if (pBarContainer) {
-                const pFill = pBarContainer.querySelector('.progress-fill');
-                if (pFill) {
-                    pFill.style.width = Math.min(100, Math.max(0, percent)) + "%";
-                    if (percent === 0) {
-                        pFill.style.background = 'transparent';
-                        pFill.style.boxShadow = 'none';
-                    }
+              const pFill = pBarContainer.querySelector('.progress-fill');
+              const pBg = pBarContainer.querySelector('.progress-bg');
+              let pText = pBarContainer.querySelector('.progress-text');
+
+              if (!pText && pBg) {
+                pText = document.createElement('div');
+                pText.className = 'progress-text';
+                pBg.parentNode.insertBefore(pText, pBg.nextSibling);
+              }
+
+              if (pFill) {
+                const finalPct = Math.min(100, Math.max(0, percent));
+                pFill.style.width = finalPct + "%";
+
+                let displayPct = Math.round(finalPct) + "%";
+                if (finalPct > 0 && finalPct < 1) {
+                  displayPct = "< 1%";
                 }
+
+                if (pText) {
+                  pText.innerText = displayPct + ' SYNCED';
+                  pText.style.color = pFill.style.color || 'var(--text-secondary)';
+                }
+
+                if (percent === 0) {
+                  pFill.style.background = 'transparent';
+                  pFill.style.boxShadow = 'none';
+                  if (pText) {
+                    pText.innerText = '0% SYNCED';
+                    pText.style.color = 'var(--text-muted)';
+                  }
+                }
+              }
             }
+          }
+
+          results[i] = { info, cats: Array.from(catSet) };
+
+        } catch (err) {
+          console.error("Failed to load", info.file, err);
         }
+      });
 
-        results[i] = { info, cats: Array.from(catSet) };
+      await Promise.all(fetches);
 
-      } catch (err) {
-        console.error("Failed to load", info.file, err);
-      }
-    });
+      animateValue("stat-exams", 0, totalExamsAll, 1200);
+      animateValue("stat-papers", 0, totalQAll, 1400);
 
-    await Promise.all(fetches);
-
-    animateValue("stat-exams", 0, totalExamsAll, 1200);
-    animateValue("stat-papers", 0, totalQAll, 1400);
-
-    if (progressData) {
+      if (progressData) {
         const totalUpdated = progressData.totalUpdatedYears || 0;
         const totalTarget = progressData.targetYears || 5985;
         const progressPct = ((totalUpdated / totalTarget) * 100).toFixed(1);
-        
+
         const readinessValueEl = document.querySelectorAll('.stat-card .stat-value')[2];
         const readinessTrendEl = document.querySelectorAll('.stat-card .stat-trend')[2];
-        
+
         if (readinessValueEl) {
-            animateValue("stat-readiness", 0, progressPct, 1500, '%');
-            // Since animateValue overwrites format and handles ints, we explicitly set the smooth innerHTML here:
-            readinessValueEl.innerHTML = progressPct + "%";
+          animateValue("stat-readiness", 0, progressPct, 1500, '%');
+          // Since animateValue overwrites format and handles ints, we explicitly set the smooth innerHTML here:
+          readinessValueEl.innerHTML = progressPct + "%";
         }
         if (readinessTrendEl) {
-            readinessTrendEl.innerHTML = `★ ${totalUpdated} / ${totalTarget} Years Synced`;
-            readinessTrendEl.className = "stat-trend " + (progressPct >= 100 ? "trend-up" : "trend-neutral");
+          readinessTrendEl.innerHTML = `★ ${totalUpdated} / ${totalTarget} Years Synced`;
+          readinessTrendEl.className = "stat-trend " + (progressPct >= 100 ? "trend-up" : "trend-neutral");
         }
-    }
+      }
 
-    // Render Quick Notes
-    const qnGrid = document.getElementById('qn-grid');
-    if (qnGrid) {
-      qnGrid.innerHTML = '';
-      results.forEach(res => {
-        if (!res) return;
-        let colorVar = "var(--blue)";
-        if (res.info.key === 'govt') colorVar = "var(--orange)";
-        if (res.info.key === 'banking') colorVar = "var(--green)";
-        if (res.info.key === 'tech') colorVar = "var(--purple)";
-        
-        // Show up to 10 distinct categories, bundle the rest
-        let catsToShow = res.cats.slice(0, 10);
-        if (res.cats.length > 10) catsToShow.push(`+${res.cats.length - 10} More`);
-        
-        const pills = catsToShow.map(c => `<span class="qn-pill">${c}</span>`).join('');
-        
-        const qDiv = document.createElement('div');
-        qDiv.className = 'qn-card';
-        qDiv.innerHTML = `
+      // Render Quick Notes
+      const qnGrid = document.getElementById('qn-grid');
+      if (qnGrid) {
+        qnGrid.innerHTML = '';
+        results.forEach(res => {
+          if (!res) return;
+          let colorVar = "var(--blue)";
+          if (res.info.key === 'govt') colorVar = "var(--orange)";
+          if (res.info.key === 'banking') colorVar = "var(--green)";
+          if (res.info.key === 'tech') colorVar = "var(--purple)";
+
+          // Show up to 10 distinct categories, bundle the rest
+          let catsToShow = res.cats.slice(0, 10);
+          if (res.cats.length > 10) catsToShow.push(`+${res.cats.length - 10} More`);
+
+          const pills = catsToShow.map(c => `<span class="qn-pill">${c}</span>`).join('');
+
+          const qDiv = document.createElement('div');
+          qDiv.className = 'qn-card';
+          qDiv.innerHTML = `
           <div class="qn-card-title" style="color:${colorVar}">${res.info.name}</div>
           <div>${pills || '<span class="qn-pill">All Topics</span>'}</div>
         `;
-        qnGrid.appendChild(qDiv);
-      });
+          qnGrid.appendChild(qDiv);
+        });
+      }
     }
-  }
 
-  window.onload = () => {
-    loadDashboardData();
-  };
-</script>
+    window.onload = () => {
+      loadDashboardData();
+    };
+  </script>
 
 </body>
+
 </html>
