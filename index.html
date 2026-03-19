@@ -432,7 +432,7 @@
 
     let progressData = null;
     try {
-      const pRes = await fetch('http://localhost:5000/api/progress');
+      const pRes = await fetch('/api/progress');
       progressData = await pRes.json();
     } catch(err) { console.error("Progress fetch failed:", err); }
 

@@ -61,7 +61,7 @@ const contentArea   = document.getElementById('content-area');
 // ═══════════════════════════════════════════════════════════
 //  API CONFIG
 // ═══════════════════════════════════════════════════════════
-const API_BASE = "http://localhost:5000";
+const API_BASE = ""; // Use relative paths for deployment
 
 // ═══════════════════════════════════════════════════════════
 //  APP STATE
