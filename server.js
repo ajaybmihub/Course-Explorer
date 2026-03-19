@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // ── MONGOOSE SETUP ──
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://ajaybmihub:ajay2004@cluster7.sid1ior.mongodb.net/";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://ajaybmihub:ajay2004@cluster7.sid1ior.mongodb.net/goverment_qb";
 
 if (!MONGO_URI) {
   console.error("❌ Error: MONGO_URI is missing. Set it in your environment variables or .env file.");
@@ -83,14 +83,20 @@ const Topic = mongoose.model('Topic', topicSchema);
 
 // Helper to map department/category to collection name
 function mapToCollection(dept) {
-    if (!dept) return "topics"; // Default if missing
+    if (!dept) return "topics"; 
     const d = dept.toLowerCase();
+    
+    // Exact/Specific matches first
     if (d.includes("upsc")) return "upsc";
     if (d.includes("railway")) return "railways";
     if (d.includes("bank")) return "bank_exams";
-    if (d.includes("jee")) return "jee_main";
     if (d.includes("neet")) return "neet_ug";
-    return "topics"; // Fallback
+    
+    // JEE sub-variants
+    if (d.includes("jee advance")) return "jee_advance";
+    if (d.includes("jee main") || d.includes("jee")) return "jee_main";
+
+    return "topics"; 
 }
 
 // 1. GET /exams
@@ -171,6 +177,7 @@ app.get("/api/progress", async (req, res) => {
         'railways': 'Govt Exams Track',
         'bank_exams': 'Banking Track',
         'jee_main': 'JEE / NEET Track',
+        'jee_advance': 'JEE / NEET Track',
         'neet_ug': 'JEE / NEET Track'
     };
 
