@@ -130,12 +130,17 @@ app.get("/papers", async (req, res) => {
     const Model = getQuestionModel(mapToCollection(exam));
     
     const papers = await Model.aggregate([
-      { $match: { year: String(year) } },
+      { $match: { 
+          $or: [
+              { year: String(year) },
+              { year: Number(year) }
+          ]
+      }},
       {
         $group: {
-          _id: "$exam_type", 
+          _id: { $ifNull: ["$exam_type", "$exam"] }, 
           pdf_name: { $first: "$pdf_name" },
-          paper: { $first: "$exam_type" }
+          paper: { $first: { $ifNull: ["$exam_type", "$exam"] } }
         }
       }
     ]);
@@ -196,8 +201,8 @@ app.get("/api/progress", async (req, res) => {
     for (const [col, trackTitle] of Object.entries(collections)) {
       const Model = getQuestionModel(col);
       const aggr = await Model.aggregate([
-          { $group: { _id: { exam_type: "$exam_type", year: "$year" } } },
-          { $group: { _id: "$_id.exam_type", updated_years: { $sum: 1 } } }
+          { $group: { _id: { exam_name: { $ifNull: ["$exam_type", "$exam"] }, year: "$year" } } },
+          { $group: { _id: "$_id.exam_name", updated_years: { $sum: 1 } } }
       ]);
       
       aggr.forEach(item => {

@@ -742,20 +742,20 @@ window.loadQuestions = async function(paper_id, exam = currentExam) {
             <h2 style="font-size:24px; font-weight:800; color:var(--text-primary); margin-bottom:4px;">${currentExam}</h2>
             <p style="color:var(--text-muted); font-size:14px;">${currentYear} · ${questions.length} Questions</p>
           </div>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 24px; align-items: start;">`;
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; align-items: start;">`;
 
     questions.forEach((q, i) => {
       html += `
         <div class="question-card" style="margin-bottom:0; height:100%; display:flex; flex-direction:column;">
-          <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; gap:12px; flex-wrap:wrap;">
              <div class="diff ${q.difficulty === 'Easy' ? 'diff-easy' : q.difficulty === 'Hard' ? 'diff-hard' : 'diff-medium'}">${q.difficulty}</div>
-             <div style="font-size:11px; color:var(--text-muted); font-weight:600;">Subject: ${q.subject}</div>
+             <div style="font-size:11px; color:var(--text-muted); font-weight:600; text-align:right;">Subject: ${q.subject}</div>
           </div>
-          <h4 style="line-height:1.5;">Q${i + 1}. ${q.question}</h4>
-          <div class="options-list" style="margin-left: 20px; display: flex; flex-direction: column; gap: 8px; margin-top: 16px; margin-bottom: auto;">
+          <h4 style="line-height:1.5; font-size: 15px; margin-bottom: 20px;">Q${i + 1}. ${q.question}</h4>
+          <div class="options-list" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: auto;">
             ${Object.entries(q.option || {}).map(([key, val]) => `
-              <div class="paper-option" style="color: var(--text-secondary); font-size: 14px; line-height: 1.5;">
-                <strong style="color: var(--text-primary);">${key}.</strong> ${val}
+              <div class="paper-option" style="color: var(--text-secondary); font-size: 13.5px; line-height: 1.5; padding: 12px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; display: flex;">
+                <strong style="color: var(--text-primary); margin-right: 8px; min-width: 18px;">${key}.</strong> <span style="flex:1;">${val}</span>
               </div>
             `).join("")}
           </div>

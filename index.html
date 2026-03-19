@@ -433,7 +433,9 @@
     let progressData = null;
     try {
       const pRes = await fetch('/api/progress');
-      progressData = await pRes.json();
+      if (pRes.ok) {
+         progressData = await pRes.json();
+      }
     } catch(err) { console.error("Progress fetch failed:", err); }
 
     const fetches = TRACKS_INFO.map(async (info, i) => {

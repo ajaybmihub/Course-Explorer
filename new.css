@@ -967,7 +967,7 @@ body {
 /* ── QUESTION CARDS ── */
 .question-container {
     padding: 30px;
-    max-width: 900px;
+    max-width: 100%;
     margin: 0 auto;
     width: 100%;
 }
