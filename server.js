@@ -240,7 +240,7 @@ async function calculateProgress() {
 }
 
 // Ensure the db connection is ready before calculating.
-// We'll calculate progress periodically (e.g. every 10 seconds).
+// We'll calculate progress periodically locally just in case.
 cron.schedule('*/10 * * * * *', calculateProgress);
 
 // In case the connection takes a moment, set a timeout to trigger initially.
@@ -259,6 +259,42 @@ app.get("/api/progress", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// ── EXTERNAL CRON & RENDER KEEP-ALIVE ROUTES ──
+
+// Job 1: Keep Alive (Ping every 5 mins to stop Render from sleeping)
+app.get("/api/keep-alive", (req, res) => {
+  res.status(200).json({ status: "Alive!", time: new Date() });
+});
+
+// Job 2: Actual Logic (Ping via cron-job.org)
+app.get("/api/cron-job", async (req, res) => {
+  const secret = req.query.key;
+
+  // Verify the secret key to prevent unauthorized execution
+  // Set CRON_SECRET in your Render environment variables (e.g. CRON_SECRET=MY_SECRET)
+  if (process.env.CRON_SECRET && secret !== process.env.CRON_SECRET) {
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+
+  try {
+    console.log("External Cron triggered at:", new Date());
+
+    // Execute the database progress aggregation
+    await calculateProgress();
+
+    res.status(200).json({
+      success: true,
+      message: "Cron job executed successfully 🚀",
+      time: new Date()
+    });
+
+  } catch (error) {
+    console.error("Cron error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
