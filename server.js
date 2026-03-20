@@ -3,6 +3,10 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
+const cron = require('node-cron');
+
+let cachedProgressData = null;
+let isCalculatingProgress = false;
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -175,7 +179,9 @@ app.get("/topics", async (req, res) => {
   }
 });
 // 6. GET /api/progress
-app.get("/api/progress", async (req, res) => {
+async function calculateProgress() {
+  if (isCalculatingProgress) return;
+  isCalculatingProgress = true;
   try {
     const collections = {
         'upsc': 'Govt Exams Track',
@@ -225,7 +231,30 @@ app.get("/api/progress", async (req, res) => {
       metric.tracks[track].target = trackCounts[track] * 15;
     }
 
-    res.json(metric);
+    cachedProgressData = metric;
+  } catch (err) {
+    console.error("Error calculating progress in cron task:", err.message);
+  } finally {
+    isCalculatingProgress = false;
+  }
+}
+
+// Ensure the db connection is ready before calculating.
+// We'll calculate progress periodically (e.g. every 10 seconds).
+cron.schedule('*/10 * * * * *', calculateProgress);
+
+// In case the connection takes a moment, set a timeout to trigger initially.
+setTimeout(calculateProgress, 5000);
+
+app.get("/api/progress", async (req, res) => {
+  try {
+    if (cachedProgressData) {
+      return res.json(cachedProgressData);
+    }
+    
+    // Fallback if not ready yet
+    await calculateProgress();
+    res.json(cachedProgressData || { error: "Still calculating..." });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
